@@ -1,0 +1,20 @@
+{
+  "name": "vietnamese-nlp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "encoder_pl.js",
+  "dependencies": {
+    "assert": "^1.4.1",
+    "encoding": "^0.1.12",
+    "swipl": "^1.0.3",
+    "html-entities": "^1.2.1",
+    "utf8": "^3.0.0",
+    "unidecode": "^0.1.8"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

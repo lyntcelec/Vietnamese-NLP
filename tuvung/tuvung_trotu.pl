@@ -1,0 +1,2 @@
+trotu_cuoicau  -->
+[mà].
