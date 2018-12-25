@@ -21,7 +21,7 @@ danhtu_chiconvat  -->
 ['6368c3b3'].
 
 danhtuchung_demduoc  -->
-['62c3a069', '6e68e1baa163'].
+['6e68e1baa163'].
 
 danhtu_khongdemduoc  -->
 ['63c3a174'];

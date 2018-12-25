@@ -3,7 +3,9 @@ dongtu_chihanhdong  -->
 [nói];
 [đá];
 [chạy];
-[mở].
+[mở];
+[tắt];
+[nghe].
 
 dongtu_chitrangthai  -->
 [yêu];

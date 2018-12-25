@@ -3,7 +3,9 @@ dongtu_chihanhdong  -->
 ['6ec3b369'];
 ['c491c3a1'];
 ['6368e1baa179'];
-['6de1bb9f'].
+['6de1bb9f'];
+['74e1baaf74'];
+['6e676865'].
 
 dongtu_chitrangthai  -->
 ['79c3aa75'];

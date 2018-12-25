@@ -9,6 +9,8 @@ sublist(A,[],A).
 sublist([A|B],[A|C],X) :-
 	sublist(B,C,X).
 
+delete_first_list(A, [A|B], B).
+
 no :-
 	notrace,
 	nodebug.

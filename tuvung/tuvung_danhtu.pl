@@ -21,7 +21,7 @@ danhtu_chiconvat  -->
 [chó].
 
 danhtuchung_demduoc  -->
-[bài, nhạc].
+[nhạc].
 
 danhtu_khongdemduoc  -->
 [cát];

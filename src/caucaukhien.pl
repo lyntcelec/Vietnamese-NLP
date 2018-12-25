@@ -81,8 +81,18 @@ caucaukhien_hauxuly(List_Input, List_Output, Json) :-
 	cum_dong_tu(List_Input, List_Output, A),
 	atomics_to_string(["'caucaukhien_hauxuly':", "{", A, "}"], Json).
 
-% caucaukhien_hauxuly -> dong_tu
-caucaukhien_hauxuly(List_Input, List_Output, Json) :-
+% mở cho tôi nghe bài lạc trôi
+% cau_cau_khien -> dong_tu + cho + cum_danh_tu + dong_tu + cum_danh_tu
+cau_cau_khien_test(List_Input, List_Output, Json) :-
 	print(' +dong_tu'),
-	dong_tu(List_Input, List_Output, A),
-	atomics_to_string(["'caucaukhien_hauxuly':", "{", A, "}"], Json).
+	dong_tu(List_Input, List_Temp, A),
+	print(' +cho'),
+	delete_first_list('cho', List_Temp, List_Temp2), % 63686f : cho
+	atomics_to_string(["'cho':", "'63686f'"], B),
+	print(' +cum_danh_tu'),
+	cum_danh_tu(List_Temp2, List_Temp3, C),
+	print(' +dong_tu'),
+	dong_tu(List_Temp3, List_Temp4, D),
+	print(' +cum_danh_tu'),
+	cum_danh_tu(List_Temp4, List_Output, E),
+	atomics_to_string(["'cau_cau_khien':", "{", A, ",", B, ",", C, ",", D, ",", E, "}"], Json).

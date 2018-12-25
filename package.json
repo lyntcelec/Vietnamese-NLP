@@ -6,10 +6,12 @@
   "dependencies": {
     "assert": "^1.4.1",
     "encoding": "^0.1.12",
-    "swipl": "^1.0.3",
     "html-entities": "^1.2.1",
-    "utf8": "^3.0.0",
-    "unidecode": "^0.1.8"
+    "json-find": "^2.0.3",
+    "socket.io": "^2.2.0",
+    "swipl": "^1.0.3",
+    "unidecode": "^0.1.8",
+    "utf8": "^3.0.0"
   },
   "devDependencies": {},
   "scripts": {
