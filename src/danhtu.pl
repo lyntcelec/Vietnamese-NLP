@@ -1,4 +1,5 @@
 :- reconsult('lib.pl').
+:- reconsult('../src/cache.pl').
 :- reconsult('../tuvung/tuvung_danhtu.pl').
 :- reconsult('../tuvung/tuvung_danhtu_encoded.pl').
 
@@ -14,14 +15,6 @@ cum_danh_tu(List_Input, List_Output, Json) :-
 	dai_tu(List_Input, List_Output, A),
 	atomics_to_string(["'cum_danh_tu':", "{", A, "}"], Json).
 
-% cum_danh_tu -> mao_tu + cumtu_dacbiet
-cum_danh_tu(List_Input, List_Output, Json) :-
-	print('->mao_tu'),
-	mao_tu(List_Input, List_Temp, A),
-	print(' +cumtu_dacbiet'),
-	cumtu_dacbiet(List_Temp, List_Output, B),
-	atomics_to_string(["'cum_danh_tu':", "{", A, ",", B, "}"], Json).
-
 cumtu_dacbiet_temp([_|B], B).
 cumtu_dacbiet_temp([_|B], C) :-
 	cumtu_dacbiet_temp(B, C).
@@ -32,6 +25,16 @@ cumtu_dacbiet(A, B, Json) :-
 	sublist(A, C, B),
 	atomics_to_string(C,' ', D),
  	atomics_to_string(["'cumtu_dacbiet':", "'", D, "'"], Json).
+
+% danh_tu -> bai + cache_nhac
+danh_tu(List_Input, List_Output, Json) :-
+	print(' +bai'),
+	delete_first_list('62c3a069', List_Input, List_Temp), % 62c3a069 : bai
+	atomics_to_string(["'bai':", "'62c3a069'"], A),
+	print(' +cache_nhac'),
+	cache_nhac(List_Temp, List_Output, B),
+	!,
+	atomics_to_string(["'danh_tu':", "{", A, ",", B, "}"], Json).
 
 % danh_tu -> danhtu_ten
 danh_tu(List_Input, List_Output, Json) :-
@@ -56,6 +59,14 @@ danh_tu(List_Input, List_Output, Json) :-
 	print('->danhtu_khongdemduoc'),
 	danhtu_khongdemduoc(List_Input, List_Output, A),
 	atomics_to_string(["'danh_tu':", "{", A, "}"], Json).
+
+% danh_tu -> maotu_dacbiet + cumtu_dacbiet
+danh_tu(List_Input, List_Output, Json) :-
+	print('->maotu_dacbiet'),
+	maotu_dacbiet(List_Input, List_Temp, A),
+	print(' +cumtu_dacbiet'),
+	cumtu_dacbiet(List_Temp, List_Output, B),
+	atomics_to_string(["'danh_tu':", "{", A, ",", B, "}"], Json).
 
 % danhtu_demduoc -> danhtu_chicaycoi
 danhtu_demduoc(List_Input, List_Output, Json) :-

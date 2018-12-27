@@ -5,7 +5,9 @@ dongtu_chihanhdong  -->
 [chạy];
 [mở];
 [tắt];
-[nghe].
+[nghe];
+[cắn];
+[dừng].
 
 dongtu_chitrangthai  -->
 [yêu];

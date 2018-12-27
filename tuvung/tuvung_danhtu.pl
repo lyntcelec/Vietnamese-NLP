@@ -1,5 +1,7 @@
 danhtu_ten  -->
 [maika];
+[michael];
+[vân, anh];
 [lee].
 
 danhtu_rieng  -->
@@ -21,7 +23,7 @@ danhtu_chiconvat  -->
 [chó].
 
 danhtuchung_demduoc  -->
-[nhạc].
+[nón].
 
 danhtu_khongdemduoc  -->
 [cát];

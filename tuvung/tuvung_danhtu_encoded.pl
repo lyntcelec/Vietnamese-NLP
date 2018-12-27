@@ -1,5 +1,7 @@
 danhtu_ten  -->
 ['6d61696b61'];
+['6d69636861656c'];
+['76c3a26e', '616e68'];
 ['6c6565'].
 
 danhtu_rieng  -->
@@ -21,7 +23,7 @@ danhtu_chiconvat  -->
 ['6368c3b3'].
 
 danhtuchung_demduoc  -->
-['6e68e1baa163'].
+['6ec3b36e'].
 
 danhtu_khongdemduoc  -->
 ['63c3a174'];

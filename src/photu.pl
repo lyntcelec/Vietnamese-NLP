@@ -2,19 +2,19 @@
 :- reconsult('../tuvung/tuvung_photu.pl').
 :- reconsult('../tuvung/tuvung_photu_encoded.pl').
 
-% danh_tu -> photu_daucau
+% pho_tu -> photu_daucau
 pho_tu(List_Input, List_Output, Json) :-
 	print('->photu_daucau'),
 	photu_daucau(List_Input, List_Output, A),
 	atomics_to_string(["'pho_tu':", "{", A, "}"], Json).
 
-% danh_tu -> photu_cuoicau
+% pho_tu -> photu_cuoicau
 pho_tu(List_Input, List_Output, Json) :-
 	print('->photu_cuoicau'),
 	photu_cuoicau(List_Input, List_Output, A),
 	atomics_to_string(["'pho_tu':", "{", A, "}"], Json).
 
-% danh_tu -> photu_giupdo
+% pho_tu -> photu_giupdo
 pho_tu(List_Input, List_Output, Json) :-
 	print('->photu_giupdo'),
 	photu_giupdo(List_Input, List_Output, A),

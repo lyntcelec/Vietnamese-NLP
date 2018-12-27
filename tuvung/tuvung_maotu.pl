@@ -3,7 +3,9 @@ loai_maotu  -->
 [con];
 [cái];
 [những];
-[bài];
 [cây];
 [quả];
 [cục].
+
+maotu_dacbiet  -->
+[bài].

@@ -28,5 +28,6 @@ def main():
                     for nlp_parser in prolog.query(data):
                         print(nlp_parser["P"])
                         conn.sendall(nlp_parser["P"])
+                        time.sleep(0.001)
                     conn.sendall(b'Finish')
 main()
