@@ -1,49 +1,50 @@
 'use strict';
 
-var json_string = '{"cau_cau_khien":{"dong_tu":{"loai_dongtu":{"dongtu_chihanhdong":"6de1bb9f"}},"cho":"63686f","cum_danh_tu":{"dai_tu":{"daitu_nhanxung_ngoithunhat":"74c3b469"}},"dong_tu":{"loai_dongtu":{"dongtu_chihanhdong":"6e676865"}},"cum_danh_tu":{"mao_tu":{"loai_maotu":"62c3a069"},"cumtu_dacbiet":"6ce1baa163 7472c3b469"}}}'
+var text_in = '{"cau_cau_khien":{"caucaukhien_xulytrungtam":{"dong_tu":{"loai_dongtu":{"dongtu_chihanhdong":"6de1bb9f"}},"cho":"63686f","cum_danh_tu1":{"dai_tu":{"daitu_nhanxung_ngoithunhat":"74c3b469"}},"cum_danh_tu2":{"danh_tu":{"bai":"62c3a069","cache_nhac":"6ce1baa163 7472c3b469"}}},"photu_cuoicau":"c49169","caucaukhien_daitu":{"danhtu_ten":"6d61696b61","camtu_oi":"c6a169"}}}'
+
 
 function match_regex(regex, text) {
     return text.match(regex)
 }
 
-async function convert_valid_json(json_str) {
-    function counting_words_in_json(json_str, word) {
-        return new Promise(resolve => {
-            const regex = /([a-z|_])+":/g;
-            const words = match_regex(regex, json_str);
-            var count = 0;
-            for (var index in words)
-            {
-                words[index] = words[index].slice(0, -2);
-                if (words[index] === word)
-                {
-                    count++;
-                }
-            }
-            resolve(count);
-        });
-    }
 
-    const regex = /([a-z|_])+":/g;
-    const words = match_regex(regex, json_str);
-    for (var index in words)
+function code_to_text(code) {
+    var buf = Buffer.alloc(code.length/2);
+    for (var i = 0; i < code.length/2; i++)
     {
-        words[index] = words[index].slice(0, -2);
-        const counting_words = await counting_words_in_json(json_str, words[index]);
-        if (counting_words > 1)
-        {
-            for (var i = 0; i < counting_words; i++)
-            {
-                const regex = new RegExp(`\\b${words[index]}\\b`);
-                json_str = json_str.replace(regex, `${words[index]}${i+1}`);
-            }
-        }
+        var str = code[i*2] + code[i*2 + 1];
+        buf[i] = parseInt(str, 16);
     }
-    return json_str
+    return buf.toString('utf8');
+}
+
+function strcode_to_strtext(strcode) {
+    var split_words = strcode.split(" ");
+    var strtext = '';
+
+    for (var index in split_words)
+    {
+        strtext += code_to_text(split_words[index]) + ' ';
+    }
+    strtext = strtext.slice(0, -1);
+    return strtext;
+}
+
+function decode_json_string(json_str) {
+    const regex = /(\:\"(\w+)\")|(\:\"(\w+\s){1,}\w+\")/g;
+    const words = match_regex(regex, json_str);
+
+    for (var i in words)
+    {
+        words[i] = words[i].slice(2, words[i].length);
+        words[i] = words[i].slice(0, -1);
+        json_str = json_str.replace(words[i], strcode_to_strtext(words[i]));
+    }
+    return json_str;
 }
 
 async function main() {
-    console.log(await convert_valid_json(json_string));
+    console.log(decode_json_string(text_in))
 }
 
 main()

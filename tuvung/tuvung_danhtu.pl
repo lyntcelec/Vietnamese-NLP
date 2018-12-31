@@ -2,6 +2,8 @@ danhtu_ten  -->
 [maika];
 [michael];
 [vân, anh];
+[vâng, anh];
+[mai, ca];
 [lee].
 
 danhtu_rieng  -->
@@ -15,6 +17,7 @@ danhtu_chicaycoi  -->
 danhtu_chidovat  -->
 [bàn];
 [ghế];
+[quạt];
 [đèn].
 
 danhtu_chiconvat  -->

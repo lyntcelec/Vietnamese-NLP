@@ -155,7 +155,7 @@ caucaukhien_xulytrungtam(List_Input, List_Output, Json) :-
 	atomics_to_string(["'caucaukhien_xulytrungtam':", "{", A, ",", B, ",", C, "}"], Json).
 
 % mở giúp/giùm tôi bài lạc trôi
-% caucaukhien_xulytrungtam -> dong_tu + photu_giupdo + cum_danh_tu + danh_tu
+% caucaukhien_xulytrungtam -> dong_tu + photu_giupdo + cum_danh_tu + cum_danh_tu
 caucaukhien_xulytrungtam(List_Input, List_Output, Json) :-
 	print(' +dong_tu'),
 	dong_tu(List_Input, List_Temp, A),
@@ -163,8 +163,8 @@ caucaukhien_xulytrungtam(List_Input, List_Output, Json) :-
 	photu_giupdo(List_Temp, List_Temp2, B),
 	print(' +cum_danh_tu'),
 	cum_danh_tu(List_Temp2, List_Temp3, C),
-	print(' +danh_tu'),
-	danh_tu(List_Temp3, List_Output, D),
+	print(' +cum_danh_tu'),
+	cum_danh_tu(List_Temp3, List_Output, D),
 	atomics_to_string(["'caucaukhien_xulytrungtam':", "{", A, ",", B, ",", C, ",", D, "}"], Json).
 
 % mở bài lạc trôi giúp tôi

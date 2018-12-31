@@ -1,4 +1,5 @@
 cache_nhac  -->
+[bóng, đèn];
 [lạc,trôi];
 [chắc,ai,đó,sẽ,về];
 [ánh,nắng,của,anh];

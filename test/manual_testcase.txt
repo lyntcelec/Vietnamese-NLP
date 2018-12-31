@@ -1,40 +1,55 @@
-p: mở nhạc
-p: mở bài lạc trôi
-p: maika mở bài lạc trôi
-p: maika ơi mở bài lạc trôi
-p: maika ơi mở bài lạc trôi đi
-p: mở bài lạc trôi maika ơi
-p: mở bài lạc trôi đi maika ơi
+mở nhạc
+mở bài lạc trôi
+maika mở bài lạc trôi
+maika ơi mở bài lạc trôi
+maika ơi mở bài lạc trôi đi
+mở bài lạc trôi maika ơi
+mở bài lạc trôi đi maika ơi
 [ 'cum_dong_tu' ]
 
-p: giúp tôi mở bài lạc trôi
-p: giúp tôi mở bài lạc trôi đi maika
-p: giúp tôi mở bài lạc trôi đi maika đi
+giúp tôi mở bài lạc trôi
+giúp tôi mở bài lạc trôi đi maika
+giúp tôi mở bài lạc trôi đi maika đi
 [ 'giup', 'cum_danh_tu1', 'cum_dong_tu' ]
 
-p: mở giúp tôi bài lạc trôi
-p: maika ơi mở giúp tôi bài lạc trôi
-p: maika ơi mở giúp tôi bài lạc trôi đi
-p: mở giúp tôi bài lạc trôi đi maika
-p: phiền maika mở giúp tôi bài lạc trôi đi
-[ 'dong_tu', 'photu_giupdo', 'cum_danh_tu', 'danh_tu' ]
+mở giúp tôi bài lạc trôi
+maika ơi mở giúp tôi bài lạc trôi
+maika ơi mở giúp tôi bài lạc trôi đi
+mở giúp tôi bài lạc trôi đi maika
+phiền maika mở giúp tôi bài lạc trôi đi
+[ 'dong_tu', 'photu_giupdo', 'cum_danh_tu', 'cum_danh_tu' ]
 
-p: cho tôi nghe bài lạc trôi
-p: cho tôi nghe bài lạc trôi đi
-p: cho tôi nghe bài lạc trôi đi maika
+cho tôi nghe bài lạc trôi
+cho tôi nghe bài lạc trôi đi
+cho tôi nghe bài lạc trôi đi maika
 [ 'cho', 'cum_danh_tu1', 'cum_dong_tu' ]
 
-p: mở cho tôi nghe bài lạc trôi đi maika ơi
+mở lạc trôi dùm tôi đi maika ơi
+[ 'cum_dong_tu', 'photu_giupdo', 'cum_danh_tu2' ]
+
+mở cho tôi nghe bài lạc trôi đi maika ơi
 [ 'dong_tu1', 'cho', 'cum_danh_tu1', 'cum_dong_tu' ]
 
-p: mở cho tôi bài lạc trôi đi maika
+mở cho tôi bài lạc trôi đi maika
 [ 'dong_tu', 'cho', 'cum_danh_tu1', 'cum_danh_tu2' ]
 
+Fail:
+
+tôi không muốn nghe mở cho tôi bài chắc ai đó sẽ về
+tắt mở nhạc bài chắc ai đó sẽ về
 
 
+p: mở giùm nhạc đi
 
 
+mở bài lạc trôi của sơn tùng mtp
+mở bài lạc trôi của sơn tùng mtp đi maika ơi
+maika ơi mở bài lạc trôi của sơn tùng mtp đi
+mở bài lạc trôi của sơn tùng mtp đi maika ơi
 
+giúp tôi mở bài lạc trôi của sơn tùng mtp
+maika ơi mở giúp tôi bài lạc trôi của sơn tùng mtp đi
+mở giúp tôi bài lạc trôi của sơn tùng mtp
 
 
 

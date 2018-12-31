@@ -1,15 +1,15 @@
 'use strict';
-const swipl             = require('swipl');
 const readline          = require('readline');
 const rl                = readline.createInterface(process.stdin, process.stdout);
 const net               = require('net');
 const { spawn }         = require("child_process");
+const exec              = require("child_process").exec;
 const JsonFind          = require('json-find');
 const googleSTT         = require('./googleSTT');
 
-swipl.call('consult(main)');
 //spawn('python3.7', ['prolog_interface_server.py']);
 const mpg123 = spawn('mpg123', ['-R']);
+//const mpg123 = exec('mpg123 -R');
 
 var client;
 var json_parser = [];
@@ -62,6 +62,19 @@ function strcode_to_strtext(strcode) {
     return strtext;
 }
 
+function decode_json_string(json_str) {
+    const regex = /(\:\"(\w+)\")|(\:\"(\w+\s){1,}\w+\")/g;
+    const words = match_regex(regex, json_str);
+
+    for (var i in words)
+    {
+        words[i] = words[i].slice(2, words[i].length);
+        words[i] = words[i].slice(0, -1);
+        json_str = json_str.replace(words[i], strcode_to_strtext(words[i]));
+    }
+    return json_str;
+}
+
 /**
  * Input command line.
  *
@@ -91,7 +104,9 @@ function call_prolog(arg) {
     pl_cmd_input = pl_cmd_input.slice(0, -1);
     pl_cmd_input += "], [], P)";
 
-    console.log(pl_cmd_input)
+    console.log(pl_cmd_input);
+    var time = new Date();
+    console.log(`S ${time.getMinutes()} : ${time.getSeconds()} : ${time.getMilliseconds()}`);
     client.write(pl_cmd_input);
 }
 
@@ -117,25 +132,27 @@ function rm_lastnum(str) {
     }
 }
 
-// mpg123.stdin.setEncoding('utf8');
-// mpg123.stdout.on('data', function(data) {
-//     console.log(data.toString());
-// });
+mpg123.stdin.setEncoding('utf8');
+mpg123.stdout.on('data', function(data) {
+    // console.log(data.toString());
+});
 
 function playing_music_skill(status, music_name)
 {
+    var name;
     if (status === 'tắt') {
         mpg123.stdin.write('S\n');
+        console.log('👩🏻‍💼 👉  Maika đã tắt nhạc');
     }
 
-    if (status === 'mở') {
+    if (status === 'mở' || status === 'nghe') {
         if (music_name === 'nhạc') {
             mpg123.stdin.write(`L ./Sounds/Anh-Nang-Cua-Anh-Cho-Em-Den-Ngay-Mai-OST-Duc-Phuc.mp3\n`);
         }
         else {
+            name = music_name;
             switch (music_name) {
                 case 'lạc trôi':
-                    console.log(music_name)
                     mpg123.stdin.write(`L ./Sounds/Lac-Troi-Son-Tung-M-TP.mp3\n`);
                     break;
                 case 'duyên phận':
@@ -150,8 +167,38 @@ function playing_music_skill(status, music_name)
                 case 'chắc ai đó sẽ về':
                     mpg123.stdin.write(`L ./Sounds/Chac-Ai-Do-Se-Ve-Son-Tung-M-TP.mp3\n`);
                     break;
+                case 'ánh nắng của anh':
+                    mpg123.stdin.write(`L ./Sounds/Anh-Nang-Cua-Anh-Cho-Em-Den-Ngay-Mai-OST-Duc-Phuc.mp3\n`);
+                    break;
+                default:
+                    name = false;
+            }
+
+            if (name != false)
+            {
+                console.log(`👩🏻‍💼 👉  Mời bạn nghe bài "${name}"`);
             }
         }
+    }
+}
+
+function playing_quat_skill(status)
+{
+    if (status === 'mở') {
+        console.log('👩🏻‍💼 👉  Maika sẽ mở quạt cho bạn mát nhé');
+    }
+    else if (status === 'tắt') {
+        console.log('👩🏻‍💼 👉  Maika sẽ tắt quạt ngay bây giờ');
+    }
+}
+
+function playing_den_skill(status)
+{
+    if (status === 'mở') {
+        console.log('👩🏻‍💼 👉  Maika sẽ mở đèn phòng khách cho bạn ngay bây giờ');
+    }
+    else if (status === 'tắt') {
+        console.log('👩🏻‍💼 👉  Maika sẽ tắt đèn ngay bây giờ');
     }
 }
 
@@ -172,8 +219,6 @@ function find_json_in_key(JsonFind_in, key)
 
 // const find_json_parser_in_tmp = JsonFind(json_parser_in);
 // console.log(find_json_in_key(find_json_parser_in_tmp, 'cum_danh_tu'));
-
-
 
 function cau_cau_khien_processing(json_parser_in) {
     console.log(`------ cau_cau_khien_processing ------`);
@@ -198,13 +243,19 @@ function cau_cau_khien_processing(json_parser_in) {
             const find_cum_dong_tu = JsonFind(find_json_parser_in.checkKey('cum_dong_tu'));
 
             const cumtu_dacbiet = find_cum_dong_tu.checkKey('cumtu_dacbiet');
+            const cache_nhac = find_cum_dong_tu.checkKey('cache_nhac');
 
-            dong_tu = strcode_to_strtext(find_json_in_key(find_cum_dong_tu,'dongtu_chihanhdong'));
+            dong_tu = find_json_in_key(find_cum_dong_tu,'dongtu_chihanhdong');
 
             if (cumtu_dacbiet != false)
             {
-                mao_tu = strcode_to_strtext(find_json_in_key(find_cum_dong_tu,'maotu_dacbiet'));
-                danh_tu = strcode_to_strtext(cumtu_dacbiet);
+                mao_tu = find_json_in_key(find_cum_dong_tu,'maotu_dacbiet');
+                danh_tu = cumtu_dacbiet;
+            }
+            else if (cache_nhac != false)
+            {
+                mao_tu = 'bài';
+                danh_tu = cache_nhac;
             }
             else
             {
@@ -214,7 +265,7 @@ function cau_cau_khien_processing(json_parser_in) {
 
                     if (danh_tu_tmp != false)
                     {
-                        danh_tu = strcode_to_strtext(danh_tu_tmp);
+                        danh_tu = danh_tu_tmp;
                         break;
                     }
                 }
@@ -223,20 +274,28 @@ function cau_cau_khien_processing(json_parser_in) {
     }
     else if(caucaukhien_xulytrungtam_keys.length === 3)
     {
-        if (((rm_lastnum(caucaukhien_xulytrungtam_keys[0]) === 'giup') || (rm_lastnum(caucaukhien_xulytrungtam_keys[0]) === 'cho')) &&
+        if ((((rm_lastnum(caucaukhien_xulytrungtam_keys[0]) === 'giup') || (rm_lastnum(caucaukhien_xulytrungtam_keys[0]) === 'cho')) &&
             rm_lastnum(caucaukhien_xulytrungtam_keys[1]) === 'cum_danh_tu' &&
-            rm_lastnum(caucaukhien_xulytrungtam_keys[2]) === 'cum_dong_tu')
+            rm_lastnum(caucaukhien_xulytrungtam_keys[2]) === 'cum_dong_tu') ||
+            (rm_lastnum(caucaukhien_xulytrungtam_keys[0]) === 'cum_dong_tu' &&
+                rm_lastnum(caucaukhien_xulytrungtam_keys[1]) === 'photu_giupdo' &&
+                rm_lastnum(caucaukhien_xulytrungtam_keys[2]) === 'cum_danh_tu'))
         {
             const find_cum_dong_tu = JsonFind(find_json_parser_in.checkKey('cum_dong_tu'));
-
             const cumtu_dacbiet = find_cum_dong_tu.checkKey('cumtu_dacbiet');
+            const cache_nhac = find_cum_dong_tu.checkKey('cache_nhac');
 
-            dong_tu = strcode_to_strtext(find_json_in_key(find_cum_dong_tu,'dongtu_chihanhdong'));
+            dong_tu = find_json_in_key(find_cum_dong_tu,'dongtu_chihanhdong');
 
             if (cumtu_dacbiet != false)
             {
-                mao_tu = strcode_to_strtext(find_json_in_key(find_cum_dong_tu,'maotu_dacbiet'));
-                danh_tu = strcode_to_strtext(cumtu_dacbiet);
+                mao_tu = find_json_in_key(find_cum_dong_tu,'maotu_dacbiet');
+                danh_tu = cumtu_dacbiet;
+            }
+            else if (cache_nhac != false)
+            {
+                mao_tu = 'bài';
+                danh_tu = cache_nhac;
             }
             else
             {
@@ -246,15 +305,13 @@ function cau_cau_khien_processing(json_parser_in) {
 
                     if (danh_tu_tmp != false)
                     {
-                        danh_tu = strcode_to_strtext(danh_tu_tmp);
+                        danh_tu = danh_tu_tmp;
                         break;
                     }
                 }
             }
         }
-
     }
-
     else if(caucaukhien_xulytrungtam_keys.length === 4)
     {
         if (rm_lastnum(caucaukhien_xulytrungtam_keys[0]) === 'dong_tu' &&
@@ -267,13 +324,19 @@ function cau_cau_khien_processing(json_parser_in) {
             const cum_dong_tu_json = find_json_in_key(find_caucaukhien_xulytrungtam,'cum_dong_tu');
             const find_cum_dong_tu = JsonFind(cum_dong_tu_json);
             const cumtu_dacbiet = find_cum_dong_tu.checkKey('cumtu_dacbiet');
+            const cache_nhac = find_cum_dong_tu.checkKey('cache_nhac');
 
-            dong_tu = strcode_to_strtext(find_json_in_key(find_dong_tu,'dongtu_chihanhdong'));
+            dong_tu = find_json_in_key(find_dong_tu,'dongtu_chihanhdong');
 
             if (cumtu_dacbiet != false)
             {
-                mao_tu = strcode_to_strtext(find_json_in_key(find_cum_dong_tu,'maotu_dacbiet'));
-                danh_tu = strcode_to_strtext(cumtu_dacbiet);
+                mao_tu = find_json_in_key(find_cum_dong_tu,'maotu_dacbiet');
+                danh_tu = cumtu_dacbiet;
+            }
+            else if (cache_nhac != false)
+            {
+                mao_tu = 'bài';
+                danh_tu = cache_nhac;
             }
             else
             {
@@ -283,7 +346,7 @@ function cau_cau_khien_processing(json_parser_in) {
 
                     if (danh_tu_tmp != false)
                     {
-                        danh_tu = strcode_to_strtext(danh_tu_tmp);
+                        danh_tu = danh_tu_tmp;
                         break;
                     }
                 }
@@ -299,13 +362,19 @@ function cau_cau_khien_processing(json_parser_in) {
             const cum_danh_tu_json = find_caucaukhien_xulytrungtam.checkKey('cum_danh_tu2');
             const find_cum_danh_tu = JsonFind(cum_danh_tu_json);
             const cumtu_dacbiet = find_cum_danh_tu.checkKey('cumtu_dacbiet');
+            const cache_nhac = find_cum_danh_tu.checkKey('cache_nhac');
 
-            dong_tu = strcode_to_strtext(find_json_in_key(find_dong_tu,'dongtu_chihanhdong'));
+            dong_tu = find_json_in_key(find_dong_tu,'dongtu_chihanhdong');
 
             if (cumtu_dacbiet != false)
             {
-                mao_tu = strcode_to_strtext(find_json_in_key(find_cum_danh_tu,'maotu_dacbiet'));
-                danh_tu = strcode_to_strtext(cumtu_dacbiet);
+                mao_tu = find_json_in_key(find_cum_danh_tu,'maotu_dacbiet');
+                danh_tu = cumtu_dacbiet;
+            }
+            else if (cache_nhac != false)
+            {
+                mao_tu = 'bài';
+                danh_tu = cache_nhac;
             }
             else
             {
@@ -315,7 +384,45 @@ function cau_cau_khien_processing(json_parser_in) {
 
                     if (danh_tu_tmp != false)
                     {
-                        danh_tu = strcode_to_strtext(danh_tu_tmp);
+                        danh_tu = danh_tu_tmp;
+                        break;
+                    }
+                }
+            }
+        }
+        else if (rm_lastnum(caucaukhien_xulytrungtam_keys[0]) === 'dong_tu' &&
+            rm_lastnum(caucaukhien_xulytrungtam_keys[1]) === 'photu_giupdo' &&
+            rm_lastnum(caucaukhien_xulytrungtam_keys[2]) === 'cum_danh_tu' &&
+            rm_lastnum(caucaukhien_xulytrungtam_keys[3]) === 'cum_danh_tu')
+        {
+            const dong_tu_json = find_json_in_key(find_caucaukhien_xulytrungtam,'dong_tu');
+            const find_dong_tu = JsonFind(dong_tu_json);
+            const cum_danh_tu_json = find_caucaukhien_xulytrungtam.checkKey('cum_danh_tu2');
+            const find_cum_danh_tu = JsonFind(cum_danh_tu_json);
+            const cumtu_dacbiet = find_cum_danh_tu.checkKey('cumtu_dacbiet');
+            const cache_nhac = find_cum_danh_tu.checkKey('cache_nhac');
+
+            dong_tu = find_json_in_key(find_dong_tu,'dongtu_chihanhdong');
+
+            if (cumtu_dacbiet != false)
+            {
+                mao_tu = find_json_in_key(find_cum_danh_tu,'maotu_dacbiet');
+                danh_tu = cumtu_dacbiet;
+            }
+            else if (cache_nhac != false)
+            {
+                mao_tu = 'bài';
+                danh_tu = cache_nhac;
+            }
+            else
+            {
+                for (var i in loai_danh_tu)
+                {
+                    var danh_tu_tmp = find_json_in_key(find_cum_danh_tu,loai_danh_tu[i]);
+
+                    if (danh_tu_tmp != false)
+                    {
+                        danh_tu = danh_tu_tmp;
                         break;
                     }
                 }
@@ -325,6 +432,22 @@ function cau_cau_khien_processing(json_parser_in) {
 
     if (danh_tu === 'nhạc' || mao_tu === 'bài') {
         playing_music_skill(dong_tu, danh_tu);
+        var time = new Date();
+        console.log(`G ${time.getMinutes()} : ${time.getSeconds()} : ${time.getMilliseconds()}`);
+    }
+    else if (danh_tu === 'quạt') {
+        playing_quat_skill(dong_tu);
+        var time = new Date();
+        console.log(`G ${time.getMinutes()} : ${time.getSeconds()} : ${time.getMilliseconds()}`);
+    }
+    else if (danh_tu === 'đèn') {
+        playing_den_skill(dong_tu);
+        var time = new Date();
+        console.log(`G ${time.getMinutes()} : ${time.getSeconds()} : ${time.getMilliseconds()}`);
+    }
+    else
+    {
+        console.log("Xin lỗi! tôi không hiểu ý bạn")
     }
 }
 
@@ -334,11 +457,20 @@ function processing_parser(json_parser_in) {
 
     for (var index in json_parser_in)
     {
+        console.log(`${index} :===================>`);
+        console.log(JSON.stringify(json_parser_in[index]));
+    }
+
+    for (var index in json_parser_in)
+    {
         const doc = JsonFind(json_parser_in[index]);
-        // console.log(`${index} :===================>`);
-        // console.log(JSON.stringify(json_parser_in[index]))
 
         if(doc.checkKey('cau_cau_khien') == false) continue;
+        if (doc.checkKey('cache_nhac') !== false)
+        {
+            cau_cau_khien_processing(json_parser_in[index]);
+            return;
+        }
 
         const cumtu_dacbiet_tmp = doc.checkKey('cumtu_dacbiet');
         if(cumtu_dacbiet_tmp != false)
@@ -352,6 +484,7 @@ function processing_parser(json_parser_in) {
         else
         {
             cau_cau_khien_processing(json_parser_in[index]);
+            return;
         }
 
     }
@@ -359,7 +492,10 @@ function processing_parser(json_parser_in) {
     if (cumtu_dacbiet_shortest_parser != null)
     {
         cau_cau_khien_processing(cumtu_dacbiet_shortest_parser);
+        return;
     }
+
+    console.log("Xin lỗi! tôi không hiểu ý bạn")
 }
 
 async function convert_valid_json(json_str) {
@@ -402,11 +538,11 @@ setTimeout(async function() {
     var json_parser_queue = [];
     client = new net.Socket();
     client.connect(3344, '127.0.0.1', function() {
-        console.log('Connected');
+        console.log('Connected to Prolog server');
     });
 
     client.on('close', function() {
-        console.log('Connection closed');
+        console.log('Prolog server connection closed');
     });
 
     client.on('data', async function(data) {
@@ -428,6 +564,7 @@ setTimeout(async function() {
                             json_string = json_string.slice(0, -check_Finish.length);
                         }
 
+                        json_string = decode_json_string(json_string);
                         json_string = await convert_valid_json(json_string);
                         json_parser.push(JSON.parse(json_string));
                     }
@@ -472,21 +609,25 @@ async function main() {
             case 'r': /* Start recording */
                 console.log("Begin Recording");
                 googleSTT.start();
+                mpg123.stdin.write('V 10\n');
                 break;
 
             case 's':
                 console.log("Stop Recording");
                 googleSTT.stop();
-                break;
-
-            case 'p:':
-                call_prolog(arg);
+                mpg123.stdin.write('V 100\n');
                 break;
 
             case 'exit':
             case 'quit':
             case 'q':
                 return false;
+
+            case '':
+                break;
+
+            default:
+                call_prolog(input);
         }
     });
 }

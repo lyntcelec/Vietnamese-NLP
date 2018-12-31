@@ -3,17 +3,31 @@
 :- reconsult('../tuvung/tuvung_danhtu.pl').
 :- reconsult('../tuvung/tuvung_danhtu_encoded.pl').
 
-% cum_danh_tu -> danh_tu
+% cum_danh_tu -> cumdanhtu_chinh
 cum_danh_tu(List_Input, List_Output, Json) :-
-	print('->danh_tu'),
-	danh_tu(List_Input, List_Output, A),
+	print('->cumdanhtu_chinh'),
+	cumdanhtu_chinh(List_Input, List_Output, A),
 	atomics_to_string(["'cum_danh_tu':", "{", A, "}"], Json).
 
-% cum_danh_tu -> dai_tu
+% cum_danh_tu -> cumdanhtu_chinh + so_huu
 cum_danh_tu(List_Input, List_Output, Json) :-
+	print('->cumdanhtu_chinh'),
+	cumdanhtu_chinh(List_Input, List_Temp, A),
+	print(' +so_huu'),
+	so_huu(List_Temp, List_Output, B),
+	atomics_to_string(["'cum_danh_tu':", "{", A, ",", B, "}"], Json).
+
+% cumdanhtu_chinh -> danh_tu
+cumdanhtu_chinh(List_Input, List_Output, Json) :-
+	print('->danh_tu'),
+	danh_tu(List_Input, List_Output, A),
+	atomics_to_string(["'cumdanhtu_chinh':", "{", A, "}"], Json).
+
+% cumdanhtu_chinh -> dai_tu
+cumdanhtu_chinh(List_Input, List_Output, Json) :-
 	print('->dai_tu'),
 	dai_tu(List_Input, List_Output, A),
-	atomics_to_string(["'cum_danh_tu':", "{", A, "}"], Json).
+	atomics_to_string(["'cumdanhtu_chinh':", "{", A, "}"], Json).
 
 cumtu_dacbiet_temp([_|B], B).
 cumtu_dacbiet_temp([_|B], C) :-
@@ -33,8 +47,19 @@ danh_tu(List_Input, List_Output, Json) :-
 	atomics_to_string(["'bai':", "'62c3a069'"], A),
 	print(' +cache_nhac'),
 	cache_nhac(List_Temp, List_Output, B),
-	!,
 	atomics_to_string(["'danh_tu':", "{", A, ",", B, "}"], Json).
+
+% danh_tu -> cache_nhac
+danh_tu(List_Input, List_Output, Json) :-
+	print(' +cache_nhac'),
+	cache_nhac(List_Input, List_Output, A),
+	atomics_to_string(["'danh_tu':", "{", A, "}"], Json).
+
+% danh_tu -> cache_ten
+danh_tu(List_Input, List_Output, Json) :-
+	print(' +cache_ten'),
+	cache_ten(List_Input, List_Output, A),
+	atomics_to_string(["'danh_tu':", "{", A, "}"], Json).
 
 % danh_tu -> danhtu_ten
 danh_tu(List_Input, List_Output, Json) :-
@@ -118,9 +143,11 @@ danhtu_chicaycoi(List_Input, List_Output, Json) :-
 
 % danhtu_chicaycoi -> danhtu_chicaycoi
 danhtu_chicaycoi(List_Input, List_Output, Json) :-
+	print(' +cay'),
+	delete_first_list('63c3a279', List_Input, List_Temp), % 63c3a279 : cây
 	print('->danhtu_chicaycoi'),
-	delete(List_Input,cây,List_Temp),
-	danhtu_chicaycoi(List_Temp, List_Output),
+	delete(List_Temp,'63c3a279',List_Temp2),
+	danhtu_chicaycoi(List_Temp2, List_Output),
 	sublist(List_Input, N, List_Output),
 	atomics_to_string(N,' ',A),
 	atomics_to_string(["'danhtu_chicaycoi':", "'",A, "'"], Json).
@@ -135,9 +162,11 @@ danhtu_chidovat(List_Input, List_Output, Json) :-
 
 % danhtu_chidovat -> danhtu_chidovat
 danhtu_chidovat(List_Input, List_Output, Json) :-
+	print(' +cai'),
+	delete_first_list('63c3a169', List_Input, List_Temp), % 63c3a169 : cái
 	print('->danhtu_chidovat'),
-	delete(List_Input,cái,List_Temp),
-	danhtu_chidovat(List_Temp, List_Output),
+	delete(List_Temp,'63c3a169',List_Temp2),
+	danhtu_chidovat(List_Temp2, List_Output),
 	sublist(List_Input, N, List_Output),
 	atomics_to_string(N,' ',A),
 	atomics_to_string(["'danhtu_chidovat':", "'",A, "'"], Json).
@@ -152,9 +181,11 @@ danhtu_chiconvat(List_Input, List_Output, Json) :-
 
 % danhtu_chiconvat -> danhtu_chiconvat
 danhtu_chiconvat(List_Input, List_Output, Json) :-
+	print(' +con'),
+	delete_first_list('636f6e', List_Input, List_Temp), % 636f6e : con
 	print('->danhtu_chiconvat'),
-	delete(List_Input,con,List_Temp),
-	danhtu_chiconvat(List_Temp, List_Output),
+	delete(List_Temp,'636f6e',List_Temp2),
+	danhtu_chiconvat(List_Temp2, List_Output),
 	sublist(List_Input, N, List_Output),
 	atomics_to_string(N,' ',A),
 	atomics_to_string(["'danhtu_chiconvat':", "'",A, "'"], Json).

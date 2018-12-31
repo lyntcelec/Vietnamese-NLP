@@ -6,6 +6,7 @@
 :- reconsult('camtu.pl').
 :- reconsult('maotu.pl').
 :- reconsult('trotu.pl').
+:- reconsult('sohuu.pl').
 :- reconsult('caucaukhien.pl').
 
 % cau -> cau_don

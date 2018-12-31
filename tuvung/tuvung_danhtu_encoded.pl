@@ -2,6 +2,8 @@ danhtu_ten  -->
 ['6d61696b61'];
 ['6d69636861656c'];
 ['76c3a26e', '616e68'];
+['76c3a26e67', '616e68'];
+['6d6169', '6361'];
 ['6c6565'].
 
 danhtu_rieng  -->
@@ -15,6 +17,7 @@ danhtu_chicaycoi  -->
 danhtu_chidovat  -->
 ['62c3a06e'];
 ['6768e1babf'];
+['7175e1baa174'];
 ['c491c3a86e'].
 
 danhtu_chiconvat  -->
