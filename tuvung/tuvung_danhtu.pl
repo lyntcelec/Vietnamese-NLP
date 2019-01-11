@@ -10,6 +10,11 @@ danhtu_rieng  -->
 [hà, nội];
 [việt, nam].
 
+danhtu_chinguoi  -->
+[ca, sĩ];
+[danh, ca];
+[bác, sĩ].
+
 danhtu_chicaycoi  -->
 [đa];
 [sao].
@@ -26,10 +31,15 @@ danhtu_chiconvat  -->
 [chó].
 
 danhtuchung_demduoc  -->
-[nón].
+[nón];
+[ca, khúc];
+[nhạc, phẩm];
+[bài, hát];
+[bài, nhạc].
 
 danhtu_khongdemduoc  -->
 [cát];
 [nước];
 [sữa];
-[nhạc].
+[nhạc];
+[nào].

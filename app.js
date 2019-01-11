@@ -221,6 +221,7 @@ function find_json_in_key(JsonFind_in, key)
 // console.log(find_json_in_key(find_json_parser_in_tmp, 'cum_danh_tu'));
 
 function cau_cau_khien_processing(json_parser_in) {
+    return;
     console.log(`------ cau_cau_khien_processing ------`);
     console.log(JSON.stringify(json_parser_in));
 

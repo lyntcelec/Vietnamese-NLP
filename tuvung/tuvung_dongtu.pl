@@ -7,7 +7,10 @@ dongtu_chihanhdong  -->
 [tắt];
 [nghe];
 [cắn];
-[dừng].
+[dừng];
+[phát];
+[mang, tên];
+[trình, bày].
 
 dongtu_chitrangthai  -->
 [yêu];
@@ -19,3 +22,14 @@ dongtu_chitrangthai  -->
 
 dongtu_dacbiet  -->
 [là].
+
+dongtu_kethop  -->
+[muốn];
+[thích].
+
+dongtu_phudinh  -->
+[không];
+[ko];
+[méo];
+[đếch];
+[đừng].

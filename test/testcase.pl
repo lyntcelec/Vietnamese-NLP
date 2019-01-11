@@ -1,26 +1,25 @@
 /*
-p: con chó cắn con heo
-p: mở nhạc
-p: mở bài lạc trôi
-p: maika mở bài lạc trôi
-p: maika ơi mở bài lạc trôi
-p: maika ơi mở bài lạc trôi đi
-p: mở bài lạc trôi maika ơi đi
-p: mở bài lạc trôi đi maika ơi
-p: giúp tôi mở bài lạc trôi
-p: mở giúp tôi bài lạc trôi
-p: maika ơi mở giúp tôi bài lạc trôi
-p: maika ơi mở giúp tôi bài lạc trôi đi
-p: giúp tôi mở bài lạc trôi đi maika
-p: giúp tôi mở bài lạc trôi đi maika đi
-p: mở giúp tôi bài lạc trôi đi maika
-p: phiền maika mở giúp tôi bài lạc trôi đi
-p: phiền mở giúp tôi bài lạc trôi đi maika F
-p: cho tôi nghe bài lạc trôi
-p: cho tôi nghe bài lạc trôi đi
-p: cho tôi nghe bài lạc trôi đi maika
-p: mở cho tôi nghe bài lạc trôi đi maika ơi
-p: mở cho tôi bài lạc trôi đi maika
+mở nhạc
+mở bài lạc trôi
+maika mở bài lạc trôi
+maika ơi mở bài lạc trôi
+maika ơi mở bài lạc trôi đi
+mở bài lạc trôi maika ơi đi
+mở bài lạc trôi đi maika ơi
+giúp tôi mở bài lạc trôi
+mở giúp tôi bài lạc trôi
+maika ơi mở giúp tôi bài lạc trôi
+maika ơi mở giúp tôi bài lạc trôi đi
+giúp tôi mở bài lạc trôi đi maika
+giúp tôi mở bài lạc trôi đi maika đi
+mở giúp tôi bài lạc trôi đi maika
+phiền maika mở giúp tôi bài lạc trôi đi
+phiền mở giúp tôi bài lạc trôi đi maika F
+cho tôi nghe bài lạc trôi
+cho tôi nghe bài lạc trôi đi
+cho tôi nghe bài lạc trôi đi maika
+mở cho tôi nghe bài lạc trôi đi maika ơi
+mở cho tôi bài lạc trôi đi maika
 */
 cau([con,chó,cắn,con,heo],[],P).
 cau([mở,nhạc],[],P).
@@ -43,30 +42,3 @@ cau([cho,tôi,nghe,bài,lạc,trôi],[],P).
 cau([cho,tôi,nghe,bài,lạc,trôi,đi],[],P).
 cau([cho,tôi,nghe,bài,lạc,trôi,đi,maika],[],P). F
 cau([mở,cho,tôi,nghe,bài,lạc,trôi,đi,maika,ơi],[],P).
-cau([],[],P).
-cau([],[],P).
-cau([],[],P).
-cau([],[],P).
-cau([],[],P).
-cau([],[],P).
-cau([],[],P).
-cau([],[],P).
-cau([],[],P).
-cau([],[],P).
-cau([],[],P).
-cau([],[],P).
-cau([],[],P).
-cau([],[],P).
-cau([],[],P).
-cau([],[],P).
-cau([],[],P).
-cau([],[],P).
-cau([],[],P).
-cau([],[],P).
-cau([],[],P).
-cau([],[],P).
-cau([],[],P).
-cau([],[],P).
-cau([],[],P).
-cau([],[],P).
-cau([],[],P).
