@@ -5,25 +5,31 @@
 :- reconsult('../cache/ten_encoded.pl').
 
 % cache -> cache_nhac
-cache(List_Input, List_Output, Json) :-
-	camtu_oi(List_Input, List_Output, A),
-	atomics_to_string(["'cache':", "{", A, "}"], Json).
+% return: [[cache, [cache_nhac, ...]]].
+cache(List_Input, List_Output, Phrase) :-
+	cache_nhac(List_Input, List_Output, Phrase_A),
+	append_multiple([['cache'], [Phrase_A]], Phrase).
 
 % cache -> cache_ten
-cache(List_Input, List_Output, Json) :-
-	camtu_oi(List_Input, List_Output, A),
-	atomics_to_string(["'cache':", "{", A, "}"], Json).
+% return: [[cache, [cache_ten, ...]]].
+cache(List_Input, List_Output, Phrase) :-
+	cache_ten(List_Input, List_Output, Phrase_A),
+	append_multiple([['cache'], [Phrase_A]], Phrase).
 
 % cache_nhac -> cache_nhac
-cache_nhac(List_Input, List_Output, Json) :-
+% return: [[cache_nhac, '']]
+cache_nhac(List_Input, List_Output, Phrase) :-
 	cache_nhac(List_Input, List_Output),
-	sublist(List_Input, N, List_Output),
-	atomics_to_string(N,' ',A),
-	atomics_to_string(["'cache_nhac':", "'", A, "'"], Json).
+	sublist(List_Input, List_Temp, List_Output),
+	atomics_to_string(List_Temp, ' ', Word_Temp),
+	atomics_to_string(["'", Word_Temp, "'"], Word),
+	append_multiple([['cache_nhac'], [Word]], Phrase).
 
 % cache_ten -> cache_ten
-cache_ten(List_Input, List_Output, Json) :-
+% return: [[cache_ten, '']]
+cache_ten(List_Input, List_Output, Phrase) :-
 	cache_ten(List_Input, List_Output),
-	sublist(List_Input, N, List_Output),
-	atomics_to_string(N,' ',A),
-	atomics_to_string(["'cache_ten':", "'", A, "'"], Json).
+	sublist(List_Input, List_Temp, List_Output),
+	atomics_to_string(List_Temp, ' ', Word_Temp),
+	atomics_to_string(["'", Word_Temp, "'"], Word),
+	append_multiple([['cache_ten'], [Word]], Phrase).

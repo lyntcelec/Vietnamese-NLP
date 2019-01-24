@@ -3,22 +3,17 @@
 :- reconsult('../tuvung/tuvung_trotu_encoded.pl').
 
 % tro_tu -> trotu_cuoicau
-tro_tu(List_Input, List_Output, Json) :-
-	trotu_cuoicau(List_Input, List_Output, A),
-	atomics_to_string(["'tro_tu':", "{", A, "}"], Json).
+% return: [[tro_tu, [trotu_cuoicau, ...]]].
+tro_tu(List_Input, List_Output, Phrase) :-
+	trotu_cuoicau(List_Input, List_Output, Phrase_A),
+	append_multiple([['tro_tu'], [Phrase_A]], Phrase).
 
 % trotu_cuoicau -> trotu_cuoicau
-trotu_cuoicau(List_Input, List_Output, Json) :-
-	trotu_cuoicau(List_Input, List_Temp),
-	!,
-	delete(List_Temp,mà,List_Output),
-	sublist(List_Input, N, List_Output),
-	atomics_to_string(N,' ',A),
-	atomics_to_string(["'trotu_cuoicau':", "'",A, "'"], Json).
-
-% trotu_cuoicau -> trotu_cuoicau
-trotu_cuoicau(List_Input, List_Output, Json) :-
+% return: [[trotu_cuoicau, '']]
+trotu_cuoicau(List_Input, List_Output, Phrase) :-
 	trotu_cuoicau(List_Input, List_Output),
-	sublist(List_Input, N, List_Output),
-	atomics_to_string(N,' ',A),
-	atomics_to_string(["'trotu_cuoicau':", "'", A, "'"], Json).
+	sublist(List_Input, List_Temp, List_Output),
+	atomics_to_string(List_Temp, ' ', Word_Temp),
+	atomics_to_string(["'", Word_Temp, "'"], Word),
+	append_multiple([['trotu_cuoicau'], [Word]], Phrase).
+

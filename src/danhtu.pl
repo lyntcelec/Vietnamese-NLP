@@ -4,249 +4,292 @@
 :- reconsult('../tuvung/tuvung_danhtu_encoded.pl').
 
 % cum_danh_tu -> cumdanhtu1_temp
-cum_danh_tu(List_Input, List_Output, Json) :-
-	cumdanhtu1_temp(List_Input, List_Output, A),
-	atomics_to_string(["'cum_danh_tu':", "{", A, "}"], Json).
+% return: [[cum_danh_tu, [cumdanhtu1_temp, ...]]].
+cum_danh_tu(List_Input, List_Output, Phrase) :-
+	cumdanhtu1_temp(List_Input, List_Output, Phrase_A),
+	append_multiple([['cum_danh_tu'], [Phrase_A]], Phrase).
 
 % cum_danh_tu -> cumdanhtu1_temp + cum_dong_tu
-cum_danh_tu(List_Input, List_Output, Json) :-
-	cumdanhtu1_temp(List_Input, List_Temp, A),
-	cum_dong_tu(List_Temp, List_Output, B),
-	atomics_to_string(["'cum_danh_tu':", "{", A, ",", B, "}"], Json).
+% return: [[cum_danh_tu, [cumdanhtu1_temp, ...], [cum_dong_tu, ...]]].
+cum_danh_tu(List_Input, List_Output, Phrase) :-
+	cumdanhtu1_temp(List_Input, List_Temp, Phrase_A),
+	cum_dong_tu(List_Temp, List_Output, Phrase_B),
+	append_multiple([[Phrase_A], [Phrase_B]], Phrase_Temp),
+	append_multiple([['cum_danh_tu'], [Phrase_Temp]], Phrase).
 
 % cumdanhtu1_temp -> cumdanhtu2_temp
-cumdanhtu1_temp(List_Input, List_Output, Json) :-
-	cumdanhtu2_temp(List_Input, List_Output, A),
-	atomics_to_string(["'cumdanhtu1_temp':", "{", A, "}"], Json).
+% return: [[cumdanhtu1_temp, [cumdanhtu2_temp, ...]]].
+cumdanhtu1_temp(List_Input, List_Output, Phrase) :-
+	cumdanhtu2_temp(List_Input, List_Output, Phrase_A),
+	append_multiple([['cumdanhtu1_temp'], [Phrase_A]], Phrase).
 
 % cumdanhtu1_temp -> cumdanhtu2_temp + so_huu
-cumdanhtu1_temp(List_Input, List_Output, Json) :-
-	cumdanhtu2_temp(List_Input, List_Temp, A),
-	so_huu(List_Temp, List_Output, B),
-	atomics_to_string(["'cumdanhtu1_temp':", "{", A, ",", B, "}"], Json).
-
-% cumdanhtu2_temp -> danh_tu
-cumdanhtu2_temp(List_Input, List_Output, Json) :-
-	danh_tu(List_Input, List_Output, A),
-	atomics_to_string(["'cumdanhtu2_temp':", "{", A, "}"], Json).
-
-% cumdanhtu2_temp -> danh_tu + tinh_tu
-cumdanhtu2_temp(List_Input, List_Output, Json) :-
-	danh_tu(List_Input, List_Temp, A),
-	tinh_tu(List_Temp, List_Output, B),
-	atomics_to_string(["'cumdanhtu2_temp':", "{", A, ",", B, "}"], Json).
+% return: [[cumdanhtu1_temp, [cumdanhtu2_temp, ...], [so_huu, ...]]].
+cumdanhtu1_temp(List_Input, List_Output, Phrase) :-
+	cumdanhtu2_temp(List_Input, List_Temp, Phrase_A),
+	so_huu(List_Temp, List_Output, Phrase_B),
+	append_multiple([[Phrase_A], [Phrase_B]], Phrase_Temp),
+	append_multiple([['cumdanhtu1_temp'], [Phrase_Temp]], Phrase).
 
 % cumdanhtu2_temp -> dai_tu
-cumdanhtu2_temp(List_Input, List_Output, Json) :-
-	dai_tu(List_Input, List_Output, A),
-	atomics_to_string(["'cumdanhtu2_temp':", "{", A, "}"], Json).
+% return: [[cumdanhtu2_temp, [dai_tu, ...]]].
+cumdanhtu2_temp(List_Input, List_Output, Phrase) :-
+	dai_tu(List_Input, List_Output, Phrase_A),!,
+	append_multiple([['cumdanhtu2_temp'], [Phrase_A]], Phrase).
+
+% cumdanhtu2_temp -> danh_tu
+% return: [[cumdanhtu2_temp, [danh_tu, ...]]].
+cumdanhtu2_temp(List_Input, List_Output, Phrase) :-
+	danh_tu(List_Input, List_Output, Phrase_A),
+	append_multiple([['cumdanhtu2_temp'], [Phrase_A]], Phrase).
+
+% cumdanhtu2_temp -> danh_tu + tinh_tu
+% return: [[cumdanhtu2_temp, [danh_tu, ...], [tinh_tu, ...]]].
+cumdanhtu2_temp(List_Input, List_Output, Phrase) :-
+	danh_tu(List_Input, List_Temp, Phrase_A),
+	tinh_tu(List_Temp, List_Output, Phrase_B),
+	append_multiple([[Phrase_A], [Phrase_B]], Phrase_Temp),
+	append_multiple([['cumdanhtu2_temp'], [Phrase_Temp]], Phrase).
 
 cumtu_dacbiet_temp([_|B], B).
 cumtu_dacbiet_temp([_|B], C) :-
 	cumtu_dacbiet_temp(B, C).
 
 % cumtu_dacbiet
-cumtu_dacbiet(A, B, Json) :-
-	cumtu_dacbiet_temp(A, B),
-	sublist(A, C, B),
-	atomics_to_string(C,' ', D),
- 	atomics_to_string(["'cumtu_dacbiet':", "'", D, "'"], Json).
+cumtu_dacbiet(List_Input, List_Output, Phrase) :-
+	cumtu_dacbiet_temp(List_Input, List_Output),
+	sublist(List_Input, List_Temp, List_Output),
+	atomics_to_string(List_Temp, ' ', Phrase_Temp),
+	atomics_to_string(["'", Phrase_Temp, "'"], Phrase_A),
+	append_multiple([['cumtu_dacbiet'], [Phrase_A]], Phrase).
 
 % danh_tu -> danh_tu_loop
-danh_tu(List_Input, List_Output, Json) :-
-	danh_tu_loop(List_Input, List_Output, A),
-	atomics_to_string(["'danh_tu':", "{", A, "}"], Json).
+% return: [[danh_tu, [danh_tu_loop, ...]]].
+danh_tu(List_Input, List_Output, Phrase) :-
+	danh_tu_loop(List_Input, List_Output, Phrase_A),
+	append_multiple([['danh_tu'], [Phrase_A]], Phrase).
+
+% danh_tu -> maotu_dacbiet + cumtu_dacbiet
+% return: [[danh_tu, [maotu_dacbiet, ...], [cumtu_dacbiet, ...]]].
+danh_tu(List_Input, List_Output, Phrase) :-
+	maotu_dacbiet(List_Input, List_Temp, Phrase_A),
+	cumtu_dacbiet(List_Temp, List_Output, Phrase_B),
+	append_multiple([[Phrase_A], [Phrase_B]], Phrase_Temp),
+	append_multiple([['danh_tu'], [Phrase_Temp]], Phrase).
+
+% danh_tu -> cumtu_dacbiet
+% return: [[danh_tu, [cumtu_dacbiet, ...]]].
+danh_tu(List_Input, List_Output, Phrase) :-
+	cumtu_dacbiet(List_Input, List_Output, Phrase_A),
+	append_multiple([['danh_tu'], [Phrase_A]], Phrase).
+
+% danh_tu -> danh_tu_loop + cumtu_dacbiet
+% return: [[danh_tu, [danh_tu_loop, ...], [cumtu_dacbiet, ...]]].
+danh_tu(List_Input, List_Output, Phrase) :-
+	danh_tu_loop(List_Input, List_Temp, Phrase_A),
+	cumtu_dacbiet(List_Temp, List_Output, Phrase_B),
+	append_multiple([[Phrase_A], [Phrase_B]], Phrase_Temp),
+	append_multiple([['danh_tu'], [Phrase_Temp]], Phrase).
 
 danh_tu_loop_temp() :-
 	nb_getval(danh_tu_loop_list_input, List_Input),
-	danh_tu1_temp(List_Input, List_Temp, A),
-	nb_getval(danh_tu_loop_json, List_Json_Temp),
+	danh_tu1_temp(List_Input, List_Temp, Phrase_A),
+	nb_getval(danh_tu_loop_phrase, List_Phrase_Temp),
 	(
-		List_Json_Temp == '' -> atomics_to_string([A], Json);
-		List_Json_Temp \== '' -> atomics_to_string([List_Json_Temp, ', ', A], Json)
+		List_Phrase_Temp == [] -> Phrase = [Phrase_A];
+		List_Phrase_Temp \== [] -> append_multiple([[Phrase_A], List_Phrase_Temp], Phrase)
 	),
 	nb_setval(danh_tu_loop_list_output, List_Temp),
 	nb_setval(danh_tu_loop_list_input, List_Temp),
-	nb_setval(danh_tu_loop_json, Json).
+	nb_setval(danh_tu_loop_phrase, Phrase).
 	
 % danh_tu_loop -> danh_tu1_temp + ...	
-danh_tu_loop(List_Input, List_Output, Json) :-
+danh_tu_loop(List_Input, List_Output, Phrase) :-
 	nb_setval(danh_tu_loop_list_input, List_Input),
 	nb_setval(danh_tu_loop_list_output, []),
-	nb_setval(danh_tu_loop_json, ''),
+	nb_setval(danh_tu_loop_phrase, []),
 	repeat,
 	(
 		not(call(danh_tu_loop_temp)),!
 	),
 	nb_getval(danh_tu_loop_list_output, List_Output),
-	nb_getval(danh_tu_loop_json, Json),
+	nb_getval(danh_tu_loop_phrase, Phrase_Temp),
+	length(Phrase_Temp, L),
 	(
-		Json == '' -> fail;
-		Json \== '' -> !
+		L == 1 -> [Phrase] = Phrase_Temp;
+		L \== 1 -> Phrase = Phrase_Temp
+	),
+	(
+		Phrase == [] -> fail;
+		Phrase \== [] -> !
 	).
 
-% danh_tu_loop2 -> danh_tu1_temp + ...
-%% danh_tu_loop2([], _, '') :- fail.
-%% danh_tu_loop2(List_Input, List_Output, Json) :-
-%% 	danh_tu1_temp(List_Input, List_Temp, A),
-%% 	(
-%% 		List_Temp == [] -> atomics_to_string([A], Json), List_Output = [],!;
-%% 		List_Temp \== [] -> danh_tu_loop2(List_Temp, List_Output, B),!,
-%% 		atomics_to_string([A, ', ', B], Json)
-%% 	).
-
-% danh_tu1_temp -> bai + cache_nhac
-danh_tu1_temp(List_Input, List_Output, Json) :-
-	delete_first_list('62c3a069', List_Input, List_Temp), % 62c3a069 : bai
-	atomics_to_string(["'tu_dat_biet':", "'62c3a069'"], A),
-	cache_nhac(List_Temp, List_Output, B),
-	atomics_to_string(["'danh_tu1_temp':", "{", A, ",", B, "}"], Json).
+% danh_tu1_temp -> maotu_dacbiet + cache_nhac
+% return: [[danh_tu1_temp, [maotu_dacbiet, ...], [cache_nhac, ...]]].
+danh_tu1_temp(List_Input, List_Output, Phrase) :-
+	maotu_dacbiet(List_Input, List_Temp, Phrase_A),
+	cache_nhac(List_Temp, List_Output, Phrase_B),
+	append_multiple([[Phrase_A], [Phrase_B]], Phrase_Temp),
+	append_multiple([['danh_tu1_temp'], [Phrase_Temp]], Phrase).
 
 % danh_tu1_temp -> cache_nhac
-danh_tu1_temp(List_Input, List_Output, Json) :-
-	cache_nhac(List_Input, List_Output, A),
-	atomics_to_string(["'danh_tu1_temp':", "{", A, "}"], Json).
+% return: [[danh_tu1_temp, [cache_nhac, ...]]].
+danh_tu1_temp(List_Input, List_Output, Phrase) :-
+	cache_nhac(List_Input, List_Output, Phrase_A),
+	append_multiple([['danh_tu1_temp'], [Phrase_A]], Phrase).
 
 % danh_tu1_temp -> cache_ten
-danh_tu1_temp(List_Input, List_Output, Json) :-
-	cache_ten(List_Input, List_Output, A),
-	atomics_to_string(["'danh_tu1_temp':", "{", A, "}"], Json).
+% return: [[danh_tu1_temp, [cache_ten, ...]]].
+danh_tu1_temp(List_Input, List_Output, Phrase) :-
+	cache_ten(List_Input, List_Output, Phrase_A),
+	append_multiple([['danh_tu1_temp'], [Phrase_A]], Phrase).
 
 % danh_tu1_temp -> danhtu_ten
-danh_tu1_temp(List_Input, List_Output, Json) :-
-	danhtu_ten(List_Input, List_Output, A),
-	atomics_to_string(["'danh_tu1_temp':", "{", A, "}"], Json).
+% return: [[danh_tu1_temp, [danhtu_ten, ...]]].
+danh_tu1_temp(List_Input, List_Output, Phrase) :-
+	danhtu_ten(List_Input, List_Output, Phrase_A),
+	append_multiple([['danh_tu1_temp'], [Phrase_A]], Phrase).
 
 % danh_tu1_temp -> danhtu_rieng
-danh_tu1_temp(List_Input, List_Output, Json) :-
-	danhtu_rieng(List_Input, List_Output, A),
-	atomics_to_string(["'danh_tu1_temp':", "{", A, "}"], Json).
+% return: [[danh_tu1_temp, [danhtu_rieng, ...]]].
+danh_tu1_temp(List_Input, List_Output, Phrase) :-
+	danhtu_rieng(List_Input, List_Output, Phrase_A),
+	append_multiple([['danh_tu1_temp'], [Phrase_A]], Phrase).
 
 % danh_tu1_temp -> danhtu_demduoc
-danh_tu1_temp(List_Input, List_Output, Json) :-
-	danhtu_demduoc(List_Input, List_Output, A),
-	atomics_to_string(["'danh_tu1_temp':", "{", A, "}"], Json).
+% return: [[danh_tu1_temp, [danhtu_demduoc, ...]]].
+danh_tu1_temp(List_Input, List_Output, Phrase) :-
+	danhtu_demduoc(List_Input, List_Output, Phrase_A),
+	append_multiple([['danh_tu1_temp'], [Phrase_A]], Phrase).
 
 % danh_tu1_temp -> danhtu_khongdemduoc
-danh_tu1_temp(List_Input, List_Output, Json) :-
-	danhtu_khongdemduoc(List_Input, List_Output, A),
-	atomics_to_string(["'danh_tu1_temp':", "{", A, "}"], Json).
-
-%% % danh_tu1_temp -> maotu_dacbiet + cumtu_dacbiet
-%% danh_tu1_temp(List_Input, List_Output, Json) :-
-%% 	maotu_dacbiet(List_Input, List_Temp, A),
-%% 	cumtu_dacbiet(List_Temp, List_Output, B),
-%% 	atomics_to_string(["'danh_tu1_temp':", "{", A, ",", B, "}"], Json).
-
-%% % danh_tu1_temp -> cumtu_dacbiet
-%% danh_tu1_temp(List_Input, List_Output, Json) :-
-%% 	cumtu_dacbiet(List_Input, List_Output, A),
-%% 	atomics_to_string(["'danh_tu1_temp':", "{", A, "}"], Json).
+% return: [[danh_tu1_temp, [danhtu_khongdemduoc, ...]]].
+danh_tu1_temp(List_Input, List_Output, Phrase) :-
+	danhtu_khongdemduoc(List_Input, List_Output, Phrase_A),
+	append_multiple([['danh_tu1_temp'], [Phrase_A]], Phrase).
 
 % danhtu_demduoc -> danhtu_chinguoi
-danhtu_demduoc(List_Input, List_Output, Json) :-
-	danhtu_chinguoi(List_Input, List_Output, A),
-	atomics_to_string(["'danhtu_demduoc':", "{", A, "}"], Json).
+% return: [[danhtu_demduoc, [danhtu_chinguoi, ...]]].
+danhtu_demduoc(List_Input, List_Output, Phrase) :-
+	danhtu_chinguoi(List_Input, List_Output, Phrase_A),
+	append_multiple([['danhtu_demduoc'], [Phrase_A]], Phrase).
 
 % danhtu_demduoc -> danhtu_chicaycoi
-danhtu_demduoc(List_Input, List_Output, Json) :-
-	danhtu_chicaycoi(List_Input, List_Output, A),
-	atomics_to_string(["'danhtu_demduoc':", "{", A, "}"], Json).
+% return: [[danhtu_demduoc, [danhtu_chicaycoi, ...]]].
+danhtu_demduoc(List_Input, List_Output, Phrase) :-
+	danhtu_chicaycoi(List_Input, List_Output, Phrase_A),
+	append_multiple([['danhtu_demduoc'], [Phrase_A]], Phrase).
+
+% danhtu_demduoc -> loai_maotu + danhtu_chicaycoi
+% return: [[danhtu_demduoc, [loai_maotu, ...], [danhtu_chicaycoi, ...]]].
+danhtu_demduoc(List_Input, List_Output, Phrase) :-
+	loai_maotu(List_Input, List_Temp, Phrase_A),
+	danhtu_chicaycoi(List_Temp, List_Output, Phrase_B),
+	append_multiple([[Phrase_A], [Phrase_B]], Phrase_Temp),
+	append_multiple([['danhtu_demduoc'], [Phrase_Temp]], Phrase).
 
 % danhtu_demduoc -> danhtu_chidovat
-danhtu_demduoc(List_Input, List_Output, Json) :-
-	danhtu_chidovat(List_Input, List_Output, A),
-	atomics_to_string(["'danhtu_demduoc':", "{", A, "}"], Json).
+% return: [[danhtu_demduoc, [danhtu_chidovat, ...]]].
+danhtu_demduoc(List_Input, List_Output, Phrase) :-
+	danhtu_chidovat(List_Input, List_Output, Phrase_A),
+	append_multiple([['danhtu_demduoc'], [Phrase_A]], Phrase).
+
+% danhtu_demduoc -> loai_maotu + danhtu_chidovat
+% return: [[danhtu_demduoc, [loai_maotu, ...], [danhtu_chidovat, ...]]].
+danhtu_demduoc(List_Input, List_Output, Phrase) :-
+	loai_maotu(List_Input, List_Temp, Phrase_A),
+	danhtu_chidovat(List_Temp, List_Output, Phrase_B),
+	append_multiple([[Phrase_A], [Phrase_B]], Phrase_Temp),
+	append_multiple([['danhtu_demduoc'], [Phrase_Temp]], Phrase).
 
 % danhtu_demduoc -> danhtu_chiconvat
-danhtu_demduoc(List_Input, List_Output, Json) :-
-	danhtu_chiconvat(List_Input, List_Output, A),
-	atomics_to_string(["'danhtu_demduoc':", "{", A, "}"], Json).
+% return: [[danhtu_demduoc, [danhtu_chiconvat, ...]]].
+danhtu_demduoc(List_Input, List_Output, Phrase) :-
+	danhtu_chiconvat(List_Input, List_Output, Phrase_A),
+	append_multiple([['danhtu_demduoc'], [Phrase_A]], Phrase).
+
+% danhtu_demduoc -> loai_maotu + danhtu_chiconvat
+% return: [[danhtu_demduoc, [loai_maotu, ...], [danhtu_chiconvat, ...]]].
+danhtu_demduoc(List_Input, List_Output, Phrase) :-
+	loai_maotu(List_Input, List_Temp, Phrase_A),
+	danhtu_chiconvat(List_Temp, List_Output, Phrase_B),
+	append_multiple([[Phrase_A], [Phrase_B]], Phrase_Temp),
+	append_multiple([['danhtu_demduoc'], [Phrase_Temp]], Phrase).
 
 % danhtu_demduoc -> danhtuchung_demduoc
-danhtu_demduoc(List_Input, List_Output, Json) :-
-	danhtuchung_demduoc(List_Input, List_Output, A),
-	atomics_to_string(["'danhtu_demduoc':", "{", A, "}"], Json).
+% return: [[danhtu_demduoc, [danhtuchung_demduoc, ...]]].
+danhtu_demduoc(List_Input, List_Output, Phrase) :-
+	danhtuchung_demduoc(List_Input, List_Output, Phrase_A),
+	append_multiple([['danhtu_demduoc'], [Phrase_A]], Phrase).
 
 % danhtu_ten -> danhtu_ten
-danhtu_ten(List_Input, List_Output, Json) :-
+% return: [[danhtu_ten, '']]
+danhtu_ten(List_Input, List_Output, Phrase) :-
 	danhtu_ten(List_Input, List_Output),
-	sublist(List_Input, N, List_Output),
-	atomics_to_string(N,' ',A),
-	atomics_to_string(["'danhtu_ten':", "'", A, "'"], Json).
+	sublist(List_Input, List_Temp, List_Output),
+	atomics_to_string(List_Temp, ' ', Word_Temp),
+	atomics_to_string(["'", Word_Temp, "'"], Word),
+	append_multiple([['danhtu_ten'], [Word]], Phrase).
 
 % danhtu_rieng -> danhtu_rieng
-danhtu_rieng(List_Input, List_Output, Json) :-
+% return: [[danhtu_rieng, '']]
+danhtu_rieng(List_Input, List_Output, Phrase) :-
 	danhtu_rieng(List_Input, List_Output),
-	sublist(List_Input, N, List_Output),
-	atomics_to_string(N,' ',A),
-	atomics_to_string(["'danhtu_rieng':", "'", A, "'"], Json).
+	sublist(List_Input, List_Temp, List_Output),
+	atomics_to_string(List_Temp, ' ', Word_Temp),
+	atomics_to_string(["'", Word_Temp, "'"], Word),
+	append_multiple([['danhtu_rieng'], [Word]], Phrase).
 
 % danhtu_chinguoi -> danhtu_chinguoi
-danhtu_chinguoi(List_Input, List_Output, Json) :-
+% return: [[danhtu_chinguoi, '']]
+danhtu_chinguoi(List_Input, List_Output, Phrase) :-
 	danhtu_chinguoi(List_Input, List_Output),
-	sublist(List_Input, N, List_Output),
-	atomics_to_string(N,' ',A),
-	atomics_to_string(["'danhtu_chinguoi':", "'", A, "'"], Json).
+	sublist(List_Input, List_Temp, List_Output),
+	atomics_to_string(List_Temp, ' ', Word_Temp),
+	atomics_to_string(["'", Word_Temp, "'"], Word),
+	append_multiple([['danhtu_chinguoi'], [Word]], Phrase).
 
 % danhtu_chicaycoi -> danhtu_chicaycoi
-danhtu_chicaycoi(List_Input, List_Output, Json) :-
+% return: [[danhtu_chicaycoi, '']]
+danhtu_chicaycoi(List_Input, List_Output, Phrase) :-
 	danhtu_chicaycoi(List_Input, List_Output),
-	sublist(List_Input, N, List_Output),
-	atomics_to_string(N,' ',A),
-	atomics_to_string(["'danhtu_chicaycoi':", "'", A, "'"], Json).
-
-% danhtu_chicaycoi -> danhtu_chicaycoi
-danhtu_chicaycoi(List_Input, List_Output, Json) :-
-	delete_first_list('63c3a279', List_Input, List_Temp), % 63c3a279 : cây
-	delete(List_Temp,'63c3a279',List_Temp2),
-	danhtu_chicaycoi(List_Temp2, List_Output),
-	sublist(List_Input, N, List_Output),
-	atomics_to_string(N,' ',A),
-	atomics_to_string(["'danhtu_chicaycoi':", "'",A, "'"], Json).
+	sublist(List_Input, List_Temp, List_Output),
+	atomics_to_string(List_Temp, ' ', Word_Temp),
+	atomics_to_string(["'", Word_Temp, "'"], Word),
+	append_multiple([['danhtu_chicaycoi'], [Word]], Phrase).
 
 % danhtu_chidovat -> danhtu_chidovat
-danhtu_chidovat(List_Input, List_Output, Json) :-
+% return: [[danhtu_chidovat, '']]
+danhtu_chidovat(List_Input, List_Output, Phrase) :-
 	danhtu_chidovat(List_Input, List_Output),
-	sublist(List_Input, N, List_Output),
-	atomics_to_string(N,' ',A),
-	atomics_to_string(["'danhtu_chidovat':", "'", A, "'"], Json).
-
-% danhtu_chidovat -> danhtu_chidovat
-danhtu_chidovat(List_Input, List_Output, Json) :-
-	delete_first_list('63c3a169', List_Input, List_Temp), % 63c3a169 : cái
-	delete(List_Temp,'63c3a169',List_Temp2),
-	danhtu_chidovat(List_Temp2, List_Output),
-	sublist(List_Input, N, List_Output),
-	atomics_to_string(N,' ',A),
-	atomics_to_string(["'danhtu_chidovat':", "'",A, "'"], Json).
+	sublist(List_Input, List_Temp, List_Output),
+	atomics_to_string(List_Temp, ' ', Word_Temp),
+	atomics_to_string(["'", Word_Temp, "'"], Word),
+	append_multiple([['danhtu_chidovat'], [Word]], Phrase).
 
 % danhtu_chiconvat -> danhtu_chiconvat
-danhtu_chiconvat(List_Input, List_Output, Json) :-
+% return: [[danhtu_chiconvat, '']]
+danhtu_chiconvat(List_Input, List_Output, Phrase) :-
 	danhtu_chiconvat(List_Input, List_Output),
-	sublist(List_Input, N, List_Output),
-	atomics_to_string(N,' ',A),
-	atomics_to_string(["'danhtu_chiconvat':", "'", A, "'"], Json).
-
-% danhtu_chiconvat -> danhtu_chiconvat
-danhtu_chiconvat(List_Input, List_Output, Json) :-
-	delete_first_list('636f6e', List_Input, List_Temp), % 636f6e : con
-	delete(List_Temp,'636f6e',List_Temp2),
-	danhtu_chiconvat(List_Temp2, List_Output),
-	sublist(List_Input, N, List_Output),
-	atomics_to_string(N,' ',A),
-	atomics_to_string(["'danhtu_chiconvat':", "'",A, "'"], Json).
+	sublist(List_Input, List_Temp, List_Output),
+	atomics_to_string(List_Temp, ' ', Word_Temp),
+	atomics_to_string(["'", Word_Temp, "'"], Word),
+	append_multiple([['danhtu_chiconvat'], [Word]], Phrase).
 
 % danhtuchung_demduoc -> danhtuchung_demduoc
-danhtuchung_demduoc(List_Input, List_Output, Json) :-
+% return: [[danhtuchung_demduoc, '']]
+danhtuchung_demduoc(List_Input, List_Output, Phrase) :-
 	danhtuchung_demduoc(List_Input, List_Output),
-	sublist(List_Input, N, List_Output),
-	atomics_to_string(N,' ',A),
-	atomics_to_string(["'danhtuchung_demduoc':", "'", A, "'"], Json).
+	sublist(List_Input, List_Temp, List_Output),
+	atomics_to_string(List_Temp, ' ', Word_Temp),
+	atomics_to_string(["'", Word_Temp, "'"], Word),
+	append_multiple([['danhtuchung_demduoc'], [Word]], Phrase).
 
 % danhtu_khongdemduoc -> danhtu_khongdemduoc
-danhtu_khongdemduoc(List_Input, List_Output, Json) :-
+% return: [[danhtu_khongdemduoc, '']]
+danhtu_khongdemduoc(List_Input, List_Output, Phrase) :-
 	danhtu_khongdemduoc(List_Input, List_Output),
-	sublist(List_Input, N, List_Output),
-	atomics_to_string(N,' ',A),
-	atomics_to_string(["'danhtu_khongdemduoc':", "'", A, "'"], Json).
+	sublist(List_Input, List_Temp, List_Output),
+	atomics_to_string(List_Temp, ' ', Word_Temp),
+	atomics_to_string(["'", Word_Temp, "'"], Word),
+	append_multiple([['danhtu_khongdemduoc'], [Word]], Phrase).

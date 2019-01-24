@@ -21,7 +21,8 @@ const loai_danh_tu = [
     'danhtu_chidovat',
     'danhtu_chiconvat',
     'danhtuchung_demduoc',
-    'danhtu_khongdemduoc'
+    'danhtu_khongdemduoc',
+    'cumtu_dacbiet'
 ];
 
 function match_regex(regex, text) {
@@ -93,7 +94,7 @@ function promptInput(prompt, handler) {
 }
 
 function call_prolog(arg) {
-    var pl_cmd_input = 'cau([';
+    var pl_cmd_input = 'process_nlp([';
     arg = arg.toLowerCase();
     console.log(arg);
     var split_words = arg.split(" ");
@@ -102,11 +103,12 @@ function call_prolog(arg) {
         pl_cmd_input += `'${text_to_code(split_words[index])}',`;
     }
     pl_cmd_input = pl_cmd_input.slice(0, -1);
-    pl_cmd_input += "], [], P)";
+    pl_cmd_input += "], J)";
 
     console.log(pl_cmd_input);
     var time = new Date();
     console.log(`S ${time.getMinutes()} : ${time.getSeconds()} : ${time.getMilliseconds()}`);
+    // DEBUG
     client.write(pl_cmd_input);
 }
 
@@ -217,286 +219,261 @@ function find_json_in_key(JsonFind_in, key)
     return false;
 }
 
-// const find_json_parser_in_tmp = JsonFind(json_parser_in);
-// console.log(find_json_in_key(find_json_parser_in_tmp, 'cum_danh_tu'));
+function find_danh_tu_cau_cau_khien(json_parser_in)
+{
+    console.log('find_danh_tu_cau_cau_khien');
+
+    var danh_tu = {noun:'', artist:null};
+
+    const find_json_parser = JsonFind(json_parser_in);
+
+    for (var i in loai_danh_tu)
+    {
+        var danh_tu_tmp = find_json_in_key(find_json_parser, loai_danh_tu[i]);
+
+        if (danh_tu_tmp != false)
+        {
+            danh_tu['noun'] = danh_tu_tmp;
+            break;
+        }
+    }
+
+    var so_huu = find_json_parser.checkKey('so_huu');
+
+    if (so_huu !== false)
+    {
+        const find_so_huu = JsonFind(so_huu);
+        for (var i in loai_danh_tu)
+        {
+            var danh_tu_tmp = find_json_in_key(find_so_huu, loai_danh_tu[i]);
+
+            if (danh_tu_tmp != false)
+            {
+                danh_tu['artist'] = danh_tu_tmp;
+                break;
+            }
+        }
+    }
+    return danh_tu;
+}
+
+function find_dong_tu_cau_cau_khien(json_parser_in) {
+    const find_json_parser = JsonFind(json_parser_in);
+    var dong_tu = find_json_in_key(find_json_parser, 'dongtu_chihanhdong');
+    return dong_tu;
+}
 
 function cau_cau_khien_processing(json_parser_in) {
-    return;
+
     console.log(`------ cau_cau_khien_processing ------`);
-    console.log(JSON.stringify(json_parser_in));
 
-    const find_json_parser_in = JsonFind(json_parser_in);
-
-    if (Object.keys(json_parser_in)[0] !== 'cau_cau_khien') return;
-
-    const find_caucaukhien_xulytrungtam = JsonFind(find_json_parser_in.checkKey('caucaukhien_xulytrungtam'));
-
-    var caucaukhien_xulytrungtam = find_json_parser_in.checkKey('caucaukhien_xulytrungtam');
+    var danh_tu, dong_tu;
+    const find_json_parser = JsonFind(json_parser_in);
+    var caucaukhien_xulytrungtam = find_json_parser.checkKey('caucaukhien_xulytrungtam');
     var caucaukhien_xulytrungtam_keys = Object.keys(caucaukhien_xulytrungtam);
-    var danh_tu = '', dong_tu = '', mao_tu = '';
 
+    console.log(JSON.stringify(json_parser_in));
     console.log(caucaukhien_xulytrungtam_keys);
 
-    if (caucaukhien_xulytrungtam_keys.length === 1)
-    {
-        if (rm_lastnum(caucaukhien_xulytrungtam_keys[0]) === 'cum_dong_tu')
-        {
-            const find_cum_dong_tu = JsonFind(find_json_parser_in.checkKey('cum_dong_tu'));
+    if (caucaukhien_xulytrungtam_keys.length === 1) {
+        if (rm_lastnum(caucaukhien_xulytrungtam_keys[0]) === 'cum_dong_tu') {
 
-            const cumtu_dacbiet = find_cum_dong_tu.checkKey('cumtu_dacbiet');
-            const cache_nhac = find_cum_dong_tu.checkKey('cache_nhac');
+            const parse_cum_dong_tu = find_json_in_key(find_json_parser,'cum_dong_tu');
+            const find_parse_cum_dong_tu = JsonFind(parse_cum_dong_tu);
 
-            dong_tu = find_json_in_key(find_cum_dong_tu,'dongtu_chihanhdong');
+            var cum_danh_tu = find_json_in_key(find_parse_cum_dong_tu,'cum_danh_tu');
+            danh_tu = find_danh_tu_cau_cau_khien(cum_danh_tu);
 
-            if (cumtu_dacbiet != false)
+            var cum_dong_tu = find_json_in_key(find_parse_cum_dong_tu,'cum_dong_tu');
+            if (cum_dong_tu === false)
             {
-                mao_tu = find_json_in_key(find_cum_dong_tu,'maotu_dacbiet');
-                danh_tu = cumtu_dacbiet;
+                cum_dong_tu = find_json_in_key(find_parse_cum_dong_tu,'loai_dongtu');
             }
-            else if (cache_nhac != false)
-            {
-                mao_tu = 'bài';
-                danh_tu = cache_nhac;
-            }
-            else
-            {
-                for (var i in loai_danh_tu)
-                {
-                    var danh_tu_tmp = find_json_in_key(find_cum_dong_tu,loai_danh_tu[i]);
-
-                    if (danh_tu_tmp != false)
-                    {
-                        danh_tu = danh_tu_tmp;
-                        break;
-                    }
-                }
-            }
+            dong_tu = find_dong_tu_cau_cau_khien(cum_dong_tu);
         }
-    }
-    else if(caucaukhien_xulytrungtam_keys.length === 3)
-    {
-        if ((((rm_lastnum(caucaukhien_xulytrungtam_keys[0]) === 'giup') || (rm_lastnum(caucaukhien_xulytrungtam_keys[0]) === 'cho')) &&
+    } else if (caucaukhien_xulytrungtam_keys.length === 2) {
+        if ((rm_lastnum(caucaukhien_xulytrungtam_keys[0]) === 'tu_dat_biet' &&
+            rm_lastnum(caucaukhien_xulytrungtam_keys[1]) === 'cum_danh_tu')) {
+
+            const parse_cum_danh_tu = find_json_in_key(find_json_parser,'cum_danh_tu');
+            const find_parse_cum_danh_tu = JsonFind(parse_cum_danh_tu);
+
+            var cum_danh_tu = find_json_in_key(find_parse_cum_danh_tu,'cum_danh_tu');
+            danh_tu = find_danh_tu_cau_cau_khien(cum_danh_tu);
+
+            var cum_dong_tu = find_json_in_key(find_parse_cum_danh_tu,'cum_dong_tu');
+            dong_tu = find_dong_tu_cau_cau_khien(cum_dong_tu);
+        }
+    } else if (caucaukhien_xulytrungtam_keys.length === 3) {
+        if (rm_lastnum(caucaukhien_xulytrungtam_keys[0]) === 'tu_dat_biet' &&
             rm_lastnum(caucaukhien_xulytrungtam_keys[1]) === 'cum_danh_tu' &&
-            rm_lastnum(caucaukhien_xulytrungtam_keys[2]) === 'cum_dong_tu') ||
-            (rm_lastnum(caucaukhien_xulytrungtam_keys[0]) === 'cum_dong_tu' &&
-                rm_lastnum(caucaukhien_xulytrungtam_keys[1]) === 'photu_giupdo' &&
-                rm_lastnum(caucaukhien_xulytrungtam_keys[2]) === 'cum_danh_tu'))
-        {
-            const find_cum_dong_tu = JsonFind(find_json_parser_in.checkKey('cum_dong_tu'));
-            const cumtu_dacbiet = find_cum_dong_tu.checkKey('cumtu_dacbiet');
-            const cache_nhac = find_cum_dong_tu.checkKey('cache_nhac');
+            rm_lastnum(caucaukhien_xulytrungtam_keys[2]) === 'cum_dong_tu') {
 
-            dong_tu = find_json_in_key(find_cum_dong_tu,'dongtu_chihanhdong');
+            const parse_cum_dong_tu = find_json_in_key(find_json_parser,'cum_dong_tu');
+            const find_parse_cum_dong_tu = JsonFind(parse_cum_dong_tu);
 
-            if (cumtu_dacbiet != false)
-            {
-                mao_tu = find_json_in_key(find_cum_dong_tu,'maotu_dacbiet');
-                danh_tu = cumtu_dacbiet;
-            }
-            else if (cache_nhac != false)
-            {
-                mao_tu = 'bài';
-                danh_tu = cache_nhac;
-            }
-            else
-            {
-                for (var i in loai_danh_tu)
-                {
-                    var danh_tu_tmp = find_json_in_key(find_cum_dong_tu,loai_danh_tu[i]);
+            var cum_danh_tu = find_json_in_key(find_parse_cum_dong_tu,'cum_danh_tu');
+            danh_tu = find_danh_tu_cau_cau_khien(cum_danh_tu);
 
-                    if (danh_tu_tmp != false)
-                    {
-                        danh_tu = danh_tu_tmp;
-                        break;
-                    }
-                }
-            }
-        }
-    }
-    else if(caucaukhien_xulytrungtam_keys.length === 4)
-    {
-        if (rm_lastnum(caucaukhien_xulytrungtam_keys[0]) === 'dong_tu' &&
-            rm_lastnum(caucaukhien_xulytrungtam_keys[1]) === 'cho' &&
-            rm_lastnum(caucaukhien_xulytrungtam_keys[2]) === 'cum_danh_tu' &&
-            rm_lastnum(caucaukhien_xulytrungtam_keys[3]) === 'cum_dong_tu')
-        {
-            const dong_tu_json = find_json_in_key(find_caucaukhien_xulytrungtam,'dong_tu');
-            const find_dong_tu = JsonFind(dong_tu_json);
-            const cum_dong_tu_json = find_json_in_key(find_caucaukhien_xulytrungtam,'cum_dong_tu');
-            const find_cum_dong_tu = JsonFind(cum_dong_tu_json);
-            const cumtu_dacbiet = find_cum_dong_tu.checkKey('cumtu_dacbiet');
-            const cache_nhac = find_cum_dong_tu.checkKey('cache_nhac');
-
-            dong_tu = find_json_in_key(find_dong_tu,'dongtu_chihanhdong');
-
-            if (cumtu_dacbiet != false)
-            {
-                mao_tu = find_json_in_key(find_cum_dong_tu,'maotu_dacbiet');
-                danh_tu = cumtu_dacbiet;
-            }
-            else if (cache_nhac != false)
-            {
-                mao_tu = 'bài';
-                danh_tu = cache_nhac;
-            }
-            else
-            {
-                for (var i in loai_danh_tu)
-                {
-                    var danh_tu_tmp = find_json_in_key(find_cum_dong_tu,loai_danh_tu[i]);
-
-                    if (danh_tu_tmp != false)
-                    {
-                        danh_tu = danh_tu_tmp;
-                        break;
-                    }
-                }
-            }
-        }
-        else if (rm_lastnum(caucaukhien_xulytrungtam_keys[0]) === 'dong_tu' &&
-            rm_lastnum(caucaukhien_xulytrungtam_keys[1]) === 'cho' &&
-            rm_lastnum(caucaukhien_xulytrungtam_keys[2]) === 'cum_danh_tu' &&
-            rm_lastnum(caucaukhien_xulytrungtam_keys[3]) === 'cum_danh_tu')
-        {
-            const dong_tu_json = find_json_in_key(find_caucaukhien_xulytrungtam,'dong_tu');
-            const find_dong_tu = JsonFind(dong_tu_json);
-            const cum_danh_tu_json = find_caucaukhien_xulytrungtam.checkKey('cum_danh_tu2');
-            const find_cum_danh_tu = JsonFind(cum_danh_tu_json);
-            const cumtu_dacbiet = find_cum_danh_tu.checkKey('cumtu_dacbiet');
-            const cache_nhac = find_cum_danh_tu.checkKey('cache_nhac');
-
-            dong_tu = find_json_in_key(find_dong_tu,'dongtu_chihanhdong');
-
-            if (cumtu_dacbiet != false)
-            {
-                mao_tu = find_json_in_key(find_cum_danh_tu,'maotu_dacbiet');
-                danh_tu = cumtu_dacbiet;
-            }
-            else if (cache_nhac != false)
-            {
-                mao_tu = 'bài';
-                danh_tu = cache_nhac;
-            }
-            else
-            {
-                for (var i in loai_danh_tu)
-                {
-                    var danh_tu_tmp = find_json_in_key(find_cum_danh_tu,loai_danh_tu[i]);
-
-                    if (danh_tu_tmp != false)
-                    {
-                        danh_tu = danh_tu_tmp;
-                        break;
-                    }
-                }
-            }
-        }
-        else if (rm_lastnum(caucaukhien_xulytrungtam_keys[0]) === 'dong_tu' &&
+            var cum_dong_tu = find_json_in_key(find_parse_cum_dong_tu,'loai_dongtu');
+            dong_tu = find_dong_tu_cau_cau_khien(cum_dong_tu);
+        } else if (rm_lastnum(caucaukhien_xulytrungtam_keys[0]) === 'cum_dong_tu' &&
             rm_lastnum(caucaukhien_xulytrungtam_keys[1]) === 'photu_giupdo' &&
-            rm_lastnum(caucaukhien_xulytrungtam_keys[2]) === 'cum_danh_tu' &&
-            rm_lastnum(caucaukhien_xulytrungtam_keys[3]) === 'cum_danh_tu')
-        {
-            const dong_tu_json = find_json_in_key(find_caucaukhien_xulytrungtam,'dong_tu');
-            const find_dong_tu = JsonFind(dong_tu_json);
-            const cum_danh_tu_json = find_caucaukhien_xulytrungtam.checkKey('cum_danh_tu2');
-            const find_cum_danh_tu = JsonFind(cum_danh_tu_json);
-            const cumtu_dacbiet = find_cum_danh_tu.checkKey('cumtu_dacbiet');
-            const cache_nhac = find_cum_danh_tu.checkKey('cache_nhac');
+            rm_lastnum(caucaukhien_xulytrungtam_keys[2]) === 'cum_danh_tu') {
 
-            dong_tu = find_json_in_key(find_dong_tu,'dongtu_chihanhdong');
+            var cum_danh_tu = find_json_in_key(find_json_parser,'cum_danh_tu');
+            danh_tu = find_danh_tu_cau_cau_khien(cum_danh_tu);
 
-            if (cumtu_dacbiet != false)
-            {
-                mao_tu = find_json_in_key(find_cum_danh_tu,'maotu_dacbiet');
-                danh_tu = cumtu_dacbiet;
-            }
-            else if (cache_nhac != false)
-            {
-                mao_tu = 'bài';
-                danh_tu = cache_nhac;
-            }
-            else
-            {
-                for (var i in loai_danh_tu)
-                {
-                    var danh_tu_tmp = find_json_in_key(find_cum_danh_tu,loai_danh_tu[i]);
+            var cum_dong_tu = find_json_in_key(find_json_parser,'cum_dong_tu');
+            dong_tu = find_dong_tu_cau_cau_khien(cum_dong_tu);
+        } else if (rm_lastnum(caucaukhien_xulytrungtam_keys[0]) === 'cum_dong_tu' &&
+            rm_lastnum(caucaukhien_xulytrungtam_keys[1]) === 'tu_dat_biet' &&
+            rm_lastnum(caucaukhien_xulytrungtam_keys[2]) === 'cum_danh_tu') {
 
-                    if (danh_tu_tmp != false)
-                    {
-                        danh_tu = danh_tu_tmp;
-                        break;
-                    }
-                }
+            var cum_danh_tu = find_json_in_key(find_json_parser,'cum_danh_tu');
+            danh_tu = find_danh_tu_cau_cau_khien(cum_danh_tu);
+
+            var cum_dong_tu = find_json_in_key(find_json_parser,'cum_dong_tu');
+            if (cum_dong_tu === false)
+            {
+                cum_dong_tu = find_json_in_key(find_json_parser,'loai_dongtu');
             }
+            dong_tu = find_dong_tu_cau_cau_khien(cum_dong_tu);
+        }
+    } else if (caucaukhien_xulytrungtam_keys.length === 4) {
+        if ((rm_lastnum(caucaukhien_xulytrungtam_keys[0]) === 'loai_dongtu' ||
+            rm_lastnum(caucaukhien_xulytrungtam_keys[0]) === 'dong_tu') &&
+            rm_lastnum(caucaukhien_xulytrungtam_keys[1]) === 'photu_giupdo' &&
+            rm_lastnum(caucaukhien_xulytrungtam_keys[2]) === 'dai_tu' &&
+            rm_lastnum(caucaukhien_xulytrungtam_keys[3]) === 'cum_danh_tu') {
+
+            var cum_danh_tu = find_json_in_key(find_json_parser,'cum_danh_tu');
+            danh_tu = find_danh_tu_cau_cau_khien(cum_danh_tu);
+
+            var cum_dong_tu = find_json_in_key(find_json_parser,'loai_dongtu');
+            dong_tu = find_dong_tu_cau_cau_khien(cum_dong_tu);
+        } else if (rm_lastnum(caucaukhien_xulytrungtam_keys[0]) === 'cum_dong_tu' &&
+            rm_lastnum(caucaukhien_xulytrungtam_keys[1]) === 'tu_dat_biet' &&
+            rm_lastnum(caucaukhien_xulytrungtam_keys[2]) === 'dai_tu' &&
+            rm_lastnum(caucaukhien_xulytrungtam_keys[3]) === 'cum_danh_tu') {
+
+            var cum_danh_tu = find_json_in_key(find_json_parser,'cum_danh_tu');
+            danh_tu = find_danh_tu_cau_cau_khien(cum_danh_tu);
+
+            var cum_dong_tu = find_json_in_key(find_json_parser,'cum_dong_tu');
+            dong_tu = find_dong_tu_cau_cau_khien(cum_dong_tu);
         }
     }
 
-    if (danh_tu === 'nhạc' || mao_tu === 'bài') {
-        playing_music_skill(dong_tu, danh_tu);
-        var time = new Date();
-        console.log(`G ${time.getMinutes()} : ${time.getSeconds()} : ${time.getMilliseconds()}`);
-    }
-    else if (danh_tu === 'quạt') {
-        playing_quat_skill(dong_tu);
-        var time = new Date();
-        console.log(`G ${time.getMinutes()} : ${time.getSeconds()} : ${time.getMilliseconds()}`);
-    }
-    else if (danh_tu === 'đèn') {
-        playing_den_skill(dong_tu);
-        var time = new Date();
-        console.log(`G ${time.getMinutes()} : ${time.getSeconds()} : ${time.getMilliseconds()}`);
-    }
-    else
-    {
-        console.log("Xin lỗi! tôi không hiểu ý bạn")
-    }
+    console.log(`👩🏻‍💼 👉    "verd":"${dong_tu}" | ${JSON.stringify(danh_tu)}`);
 }
 
 function processing_parser(json_parser_in) {
-    var cumtu_dacbiet_shortest_parser = null;
-    var cumtu_dacbiet_length = 10000;
-
+    var max_num_cumtu_dacbiet = 0;
+    var json_parser_filter = [];
     for (var index in json_parser_in)
     {
-        console.log(`${index} :===================>`);
-        console.log(JSON.stringify(json_parser_in[index]));
+        const regex = /\"\w+\"\:/g;
+        const words = match_regex(regex, JSON.stringify(json_parser_in[index]));
+
+        // console.log(`${index} -- ${words.length} :=++++++++++++++++++++>`);
+        // console.log(JSON.stringify(json_parser_in[index]));
+
+        if (words != null)
+        {
+            if (words.length >= max_num_cumtu_dacbiet)
+            {
+                if (words.length > max_num_cumtu_dacbiet)
+                {
+                    json_parser_filter = [];
+                    json_parser_filter[0] = json_parser_in[index];
+                }
+                else if (words.length === max_num_cumtu_dacbiet)
+                {
+                    json_parser_filter.push(json_parser_in[index]);
+                }
+                max_num_cumtu_dacbiet = words.length;
+            }
+        }
     }
 
-    for (var index in json_parser_in)
+    for (var index in json_parser_filter)
     {
-        const doc = JsonFind(json_parser_in[index]);
+        const regex = /\"\w+\"\:/g;
+        const words = match_regex(regex, JSON.stringify(json_parser_filter[index]));
+        // console.log(`${index} -- ${words.length} :===================>`);
+        // console.log(JSON.stringify(json_parser_filter[index]));
+    }
 
-        if(doc.checkKey('cau_cau_khien') == false) continue;
-        if (doc.checkKey('cache_nhac') !== false)
+    if (json_parser_filter.length > 0)
+    {
+        if ((json_parser_filter.length === 1))
         {
-            cau_cau_khien_processing(json_parser_in[index]);
-            return;
-        }
-
-        const cumtu_dacbiet_tmp = doc.checkKey('cumtu_dacbiet');
-        if(cumtu_dacbiet_tmp != false)
-        {
-            if (cumtu_dacbiet_tmp.length < cumtu_dacbiet_length)
-            {
-                cumtu_dacbiet_length = cumtu_dacbiet_tmp.length;
-                cumtu_dacbiet_shortest_parser = json_parser_in[index];
-            }
+            cau_cau_khien_processing(json_parser_filter[0]);
         }
         else
         {
-            cau_cau_khien_processing(json_parser_in[index]);
-            return;
+            var min_num_cumtu_dacbiet = 10000;
+            var min_count_char_cumtu_dacbiet = 1000;
+            var json_parser_filter_final;
+            var json_parser_filter_tmp = [];
+
+            for (var index in json_parser_filter)
+            {
+                const regex = /cumtu_dacbiet/g;
+                const words = match_regex(regex, JSON.stringify(json_parser_filter[index]));
+                if (words == null)
+                {
+                    cau_cau_khien_processing(json_parser_filter[0]);
+                    return;
+                }
+                if (words.length <= min_num_cumtu_dacbiet)
+                {
+                    if (words.length < min_num_cumtu_dacbiet)
+                    {
+                        json_parser_filter_tmp[0] = json_parser_filter[index];
+                    }
+                    else if (words.length === min_num_cumtu_dacbiet)
+                    {
+                        json_parser_filter_tmp.push(json_parser_filter[index]);
+                    }
+                    min_num_cumtu_dacbiet = words.length;
+                }
+            }
+
+            for (var index in json_parser_filter_tmp)
+            {
+                const regex = /\"\w+\"\:/g;
+                const words = match_regex(regex, JSON.stringify(json_parser_in[index]));
+                // console.log(`${index} -- ${words.length} :---------------------->`);
+                // console.log(JSON.stringify(json_parser_filter_tmp[index]));
+            }
+
+            json_parser_filter_final = json_parser_filter_tmp[0];
+            for (var index in json_parser_filter_tmp)
+            {
+                var count_char_cumtu_dacbiet = 0;
+                for(var i = 0; i < min_num_cumtu_dacbiet; i++)
+                {
+                    const find_json_parser = JsonFind(json_parser_filter_tmp[index]);
+                    var cumtu_dacbiet = find_json_parser.checkKey(`cumtu_dacbiet${i+1}`);
+                    count_char_cumtu_dacbiet += cumtu_dacbiet.length;
+                }
+
+                if (count_char_cumtu_dacbiet < min_count_char_cumtu_dacbiet)
+                {
+                    min_count_char_cumtu_dacbiet = count_char_cumtu_dacbiet;
+                    json_parser_filter_final = json_parser_filter_tmp[index];
+                }
+            }
+
+            cau_cau_khien_processing(json_parser_filter_final);
         }
-
     }
-
-    if (cumtu_dacbiet_shortest_parser != null)
+    else
     {
-        cau_cau_khien_processing(cumtu_dacbiet_shortest_parser);
-        return;
+        console.log("Xin lỗi! tôi không hiểu ý bạn");
     }
-
-    console.log("Xin lỗi! tôi không hiểu ý bạn")
 }
 
 async function convert_valid_json(json_str) {
@@ -532,7 +509,7 @@ async function convert_valid_json(json_str) {
             }
         }
     }
-    return json_str
+    return json_str;
 }
 
 setTimeout(async function() {
@@ -567,7 +544,13 @@ setTimeout(async function() {
 
                         json_string = decode_json_string(json_string);
                         json_string = await convert_valid_json(json_string);
-                        json_parser.push(JSON.parse(json_string));
+
+                        try {
+                            json_parser.push(JSON.parse(json_string));
+                        }
+                        catch(error) {
+                            console.error(`ERROR ===========> ${error}`);
+                        }
                     }
 
                     if(check_Finish == 'Finish')

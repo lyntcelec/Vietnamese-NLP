@@ -1,0 +1,118 @@
+mở nhạc
+mở bài lạc trôi
+maika mở bài lạc trôi
+maika ơi mở bài lạc trôi
+maika ơi mở bài lạc trôi đi
+mở bài lạc trôi maika ơi
+mở bài lạc trôi đi maika ơi
+[ 'cum_dong_tu' ]
+
+giúp tôi mở bài lạc trôi
+giúp tôi mở bài lạc trôi đi maika
+giúp tôi mở bài lạc trôi đi maika đi
+[ 'tu_dat_biet', 'cum_danh_tu' ]
+
+mở giúp tôi bài lạc trôi
+maika ơi mở giúp tôi bài lạc trôi
+maika ơi mở giúp tôi bài lạc trôi đi
+mở giúp tôi bài lạc trôi đi maika
+phiền maika mở giúp tôi bài lạc trôi đi
+[ 'loai_dongtu', 'photu_giupdo', 'dai_tu', 'cum_danh_tu' ]
+
+cho tôi nghe bài lạc trôi
+cho tôi nghe bài lạc trôi đi
+cho tôi nghe bài lạc trôi đi maika
+[ 'tu_dat_biet', 'cum_danh_tu', 'cum_dong_tu' ]
+
+mở lạc trôi dùm tôi đi maika ơi
+[ 'cum_dong_tu', 'photu_giupdo', 'cum_danh_tu' ]
+
+mở cho tôi nghe bài lạc trôi đi maika ơi
+[ 'cum_dong_tu', 'tu_dat_biet', 'cum_danh_tu' ]
+
+mở bài lạc trôi cho tôi nghe
+[ 'cum_dong_tu', 'tu_dat_biet', 'cum_danh_tu' ]
+
+mở cho tôi bài lạc trôi đi maika
+[ 'dong_tu', 'cho', 'cum_danh_tu1', 'cum_danh_tu2' ]
+
+Fail:
+phiền maika có thể giúp tôi bài lạc trôi đi
+
+tôi không muốn nghe mở cho tôi bài chắc ai đó sẽ về
+tắt mở nhạc bài chắc ai đó sẽ về
+
+
+mở bài lạc trôi của sơn tùng mtp
+mở bài lạc trôi của sơn tùng mtp đi maika ơi
+maika ơi mở bài lạc trôi của sơn tùng mtp đi
+mở bài lạc trôi của sơn tùng mtp đi maika ơi
+
+giúp tôi mở bài lạc trôi của sơn tùng mtp
+maika ơi mở giúp tôi bài lạc trôi của sơn tùng mtp đi
+mở giúp tôi bài lạc trôi của sơn tùng mtp
+
+mở bài lạc trôi cho tôi nghe
+
+tôi muốn nghe bài lạc trôi của sơn tùng
+tôi muốn mở bài lạc trôi của sơn tùng
+tôi muốn cho tôi nghe bài lạc trôi của sơn tùng
+
+tôi muốn mở bài lạc trôi cho tôi nghe
+[ 'cum_dong_tu', 'tu_dat_biet', 'cum_danh_tu' ]
+
+có thể mở bài lạc trôi của sơn tùng cho tôi nghe
+
+
+
+
+không nghe bài lạc trôi
+tôi không muốn nghe bài lạc trôi
+maika ơi tôi ko muốn mở đèn
+
+mở nhạc phẩm mang tên lạc trôi của sơn tùng mtp
+
+mở nhạc phẩm mang tên lạc trôi do ca sĩ sơn tùng mtp
+
+mở nhạc phẩm cực hay mang tên lạc trôi được trình bày bởi ca sĩ sơn tùng mtp đi maika ơi
+
+- nhạc phẩm cực hay mà nó rất phổ biến
+
+mở nhạc phẩm cực hay mang tên nhạc được trình bày bởi ca sĩ sơn tùng mtp đi maika ơi
+
+mở nhạc phẩm cực hay mang tên nhạc được trình bày bởi ca sĩ sơn tùng mtp đi maika ơi
+
+Fix ====>
+mở giùm nhạc
+
+
+
+
+
+mở nhạc
+{"cau_cau_khien":{"caucaukhien_xulytrungtam":{"cum_dong_tu":{"loai_dongtu":{"dongtu_chihanhdong":"mở"},"cum_danh_tu":{"danhtu_khongdemduoc":"nhạc"}}}}}
+
+mở nhạc của sơn tùng mtp
+{"cau_cau_khien":{"caucaukhien_xulytrungtam":{"cum_dong_tu":{"loai_dongtu":{"dongtu_chihanhdong":"mở"},"cum_danh_tu1":{"danh_tu1_temp":{"danhtu_khongdemduoc":"nhạc"},"so_huu":{"tu_dat_biet":"của","cum_danh_tu2":{"cumtu_dacbiet":"sơn tùng mtp"}}}}}}}
+
+mở bài lạc trôi của sơn tùng mtp
+{"cau_cau_khien":{"caucaukhien_xulytrungtam":{"cum_dong_tu":{"loai_dongtu":{"dongtu_chihanhdong":"mở"},"cum_danh_tu1":{"danh_tu":{"maotu_dacbiet":"bài","cumtu_dacbiet1":"lạc trôi"},"so_huu":{"tu_dat_biet":"của","cum_danh_tu2":{"cumtu_dacbiet2":"sơn tùng mtp"}}}}}}}
+
+mở bài lạc trôi của ca sĩ sơn tùng mtp
+{"cau_cau_khien":{"caucaukhien_xulytrungtam":{"cum_dong_tu":{"loai_dongtu":{"dongtu_chihanhdong":"mở"},"cum_danh_tu1":{"danh_tu":{"maotu_dacbiet":"bài","cumtu_dacbiet1":"lạc trôi"},"so_huu":{"tu_dat_biet":"của","cum_danh_tu2":{"danhtu_demduoc":{"danhtu_chinguoi":"ca sĩ"},"cumtu_dacbiet2":"sơn tùng mtp"}}}}}}}
+
+mở bài lạc trôi trình bày bởi sơn tùng mtp
+
+mở bài lạc trôi
+{"cau_cau_khien":{"caucaukhien_xulytrungtam":{"cum_dong_tu":{"loai_dongtu":{"dongtu_chihanhdong":"mở"},"cum_danh_tu":{"maotu_dacbiet":"bài","cumtu_dacbiet":"lạc trôi"}}}}}
+
+mở bài lạc trôi của sơn tùng mtp đi maika ơi
+{"cau_cau_khien":{"caucaukhien_xulytrungtam":{"cum_dong_tu":{"loai_dongtu":{"dongtu_chihanhdong":"mở"},"cum_danh_tu1":{"danh_tu":{"maotu_dacbiet":"bài","cumtu_dacbiet1":"lạc trôi"},"so_huu":{"tu_dat_biet":"của","cum_danh_tu2":{"cumtu_dacbiet2":"sơn tùng mtp"}}}}},"trotu_cuoicau":"đi","caucaukhien_daitu":{"danhtu_ten":"maika","camtu_oi":"ơi"}}}
+
+giúp tôi mở bài lạc trôi
+{"cau_cau_khien":{"caucaukhien_xulytrungtam":{"tu_dat_biet":"giúp","cum_danh_tu1":{"dai_tu":{"daitu_nhanxung_ngoithunhat":"tôi"},"cum_dong_tu":{"loai_dongtu":{"dongtu_chihanhdong":"mở"},"cum_danh_tu2":{"maotu_dacbiet":"bài","cumtu_dacbiet":"lạc trôi"}}}}}}
+
+giúp tôi mở bài nhạc
+{"cau_cau_khien":{"caucaukhien_xulytrungtam":{"tu_dat_biet":"giúp","cum_danh_tu1":{"dai_tu":{"daitu_nhanxung_ngoithunhat":"tôi"},"cum_dong_tu":{"loai_dongtu":{"dongtu_chihanhdong":"mở"},"cum_danh_tu2":{"danhtuchung_demduoc":"bài nhạc"}}}}}}
+
+

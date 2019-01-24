@@ -26,8 +26,8 @@ def main():
                         break
                     print (data)
                     for nlp_parser in prolog.query(data):
-                        print(nlp_parser["P"])
-                        conn.sendall(nlp_parser["P"])
+                        print(nlp_parser["J"])
+                        conn.sendall(nlp_parser["J"])
                         time.sleep(0.001)
                     conn.sendall(b'Finish')
 main()

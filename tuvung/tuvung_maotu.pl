@@ -8,4 +8,8 @@ loai_maotu  -->
 [cục].
 
 maotu_dacbiet  -->
-[bài].
+[bài];
+[ca, khúc];
+[nhạc, phẩm];
+[bài, hát];
+[bài, nhạc].

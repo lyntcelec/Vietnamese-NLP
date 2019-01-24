@@ -3,13 +3,16 @@
 :- reconsult('../tuvung/tuvung_camtu_encoded.pl').
 
 % cam_tu -> camtu_oi
-cam_tu(List_Input, List_Output, Json) :-
-	camtu_oi(List_Input, List_Output, A),
-	atomics_to_string(["'cam_tu':", "{", A, "}"], Json).
+% return: [[cam_tu, [camtu_oi, ...]]].
+cam_tu(List_Input, List_Output, Phrase) :-
+	camtu_oi(List_Input, List_Output, Phrase_A),
+	append_multiple([['cam_tu'], [Phrase_A]], Phrase).
 
 % camtu_oi -> camtu_oi
-camtu_oi(List_Input, List_Output, Json) :-
+% return: [[camtu_oi, '']]
+camtu_oi(List_Input, List_Output, Phrase) :-
 	camtu_oi(List_Input, List_Output),
-	sublist(List_Input, N, List_Output),
-	atomics_to_string(N,' ',A),
-	atomics_to_string(["'camtu_oi':", "'", A, "'"], Json).
+	sublist(List_Input, List_Temp, List_Output),
+	atomics_to_string(List_Temp, ' ', Word_Temp),
+	atomics_to_string(["'", Word_Temp, "'"], Word),
+	append_multiple([['camtu_oi'], [Word]], Phrase).
